@@ -1,0 +1,42 @@
+\chapter{Einleitung}\label{ch:einleitung}
+\pagenumbering{arabic}
+
+\section{Gegenstand und Motivation}
+
+Im Rahmen der Lehrveranstaltung Softwaretechnologie an der Technischen Universität Dresden werden Methoden und Konzepte zur Entwicklung großer Softwaresysteme vermittelt. Als Teil des didaktischen Konzepts der Lehrveranstaltung wird das E-Learning-System INLOOP eingesetzt, in welchem Studierende die Möglichkeit haben, Programmieraufgaben aus unterschiedlichen Anwendungsdomänen interaktiv zu lösen. Die Studierenden sollen hierbei Konzepte aus der Softwareentwicklung verinnerlichen, zu denen auch die selbstständige Einschätzung der Softwarequalität gehört. Auf INLOOP eingereichte Lösungen werden mithilfe von Tests auf funktionale Korrektheit analog zu den Anforderungen der jeweiligen Aufgabe geprüft. Hierdurch erhält der Nutzer bereits ein interaktives Feedback, woraus er Rückschlüsse auf die Funktionsfähigkeit der Teilkomponenten seiner eingereichten Lösung ziehen kann. Zusätzlich hierzu könnte jedoch auch die Codequalität der jeweiligen Lösung über spezielle Metriken automatisiert ausgewertet werden, um dem Nutzer ein verbessertes Qualitätsfeedback zu geben. Auf Grundlage des verbesserten Feedbacks könnten Nutzer über eine sogenannte Gamification motiviert werden, die Codequalität der eigenen Lösungen selbstständig zu verbessern. Hierfür soll ein konkretes Gamification-Konzept entwickelt und prototypisch in INLOOP integriert werden.
+
+\section{Problem- und Zielstellung}\label{sec:ff}
+
+Anhand eines Gamification-Konzepts und einer hieraus erstellten prototypischen Implementation soll diskutiert werden, inwiefern dies didaktisch zur Integration der Codequalität in der akademischen Lehre beitragen kann. Zur differenzierten Diskussion dieses zentralen Forschungsgegenstands sollen folgende konkrete Forschungsfragen eruiert werden.
+
+\begin{researchquestion}\label{rq1}
+Welche Codequalitätsmetriken kommen hierfür in Frage und wie können diese im Kontext von INLOOP kombiniert und parametrisiert werden, um signifikante Fehlgestaltungen des Codes zu erkennen, welche die Codequalität der eingereichten Lösungen beeinträchtigen?
+\end{researchquestion}
+
+\begin{researchquestion}\label{rq2}
+Welche Gamification-Elemente sind dafür geeignet, die durch Codequalitätsmetriken erkannten Fehlgestaltungen des Codes an die Nutzer zu kommunizieren, sodass diese motiviert werden, Fehlgestaltungen zu refaktorisieren, im Voraus zu vermeiden und damit die Codequalität der eingereichten Lösungen zu verbessern?
+\end{researchquestion}
+
+\begin{researchquestion}\label{rq3}
+Wie können die Codequalitätsmetriken mit den Gamification-Elementen in einer Gamification-Erweiterung kombiniert werden?
+\end{researchquestion}
+
+\begin{researchquestion}\label{rq4}
+Welche Auswirkungen hat die Einführung der Gamification-Erweiterung auf die Motivation, die Codequalität eingereichter Lösungen zu verbessern?
+\end{researchquestion}
+
+\noindent Diese Fragen sollen beantwortet werden, indem zunächst eine extensive Literaturrecherche durchgeführt wird, auf deren Grundlage ein Prototyp einer Gamification-Erweiterung für INLOOP konzipiert und implementiert werden soll. Anhand des Prototyps sollen schließlich die vorangestellten Forschungsfragen im Kontext einer Evaluation beantwortet werden.
+
+\section{Aufbau der Arbeit}
+
+Zu Beginn der Arbeit werden zunächst grundlegende domänenspezifische Begriffe und Zusammenhänge erläutert. Hierzu wird INLOOP im Kontext der Lehrveranstaltung Softwaretechnologie betrachtet, grundlegende Begriffe und Zusammenhänge zur Gamification erklärt und Codequalitätsmetriken im Rahmen der Softwarequalität diskutiert.
+%
+Hiernach wird ein systematischer Überblick über den Stand der Forschung zum Einsatz von Gamification mit dem Ziel der Verbesserung von Codequalität im akademischen Umfeld gegeben. Außerdem werden konkrete vergleichbare Konzepte vorgestellt und diskutiert.
+%
+Mithilfe der Erkenntnisse aus den verwandten Konzepten werden anschließend Anforderungen an eine durch Codequalitätsmetriken gestützte Gamification-Erweiterung ermittelt. Hierzu wird nach der Beschreibung des Istzustands von INLOOP eine strukturelle Analyse durchgeführt, um die Schnittstellen des Systems zu finden, an denen eine durch Codequalitätsmetriken gestützte Gamification-Erweiterung anschließen kann. Weiterhin werden konkrete funktionale und nichtfunktionale Anforderungen an eine solche Erweiterung ermittelt und die hiermit zusammenhängenden externen Bibliotheken betrachtet.
+%
+Aus der Anforderungsanalyse werden nachfolgend konkrete Konzepte für die Erweiterung erstellt. Nachdem die technischen Rahmenbedingungen festgelegt wurden, wird eine Lösungsstrategie entworfen, welche konkrete Gamification-Elemente und Codequalitätsmetriken auf Grundlage der gesammelten Evidenz auswählt und miteinander vereint. Hierzu wird unter anderem eine konkrete Softwarearchitektur entworfen und als Framework für eine darauf basierende Implementation beschrieben.
+%
+Im sich hieran anschließenden Kapitel wird die entworfene Software prototypisch implementiert und gezeigt. Zur Vorbereitung der Evaluation werden weitere technische Vorkehrungen getroffen.
+%
+Anhand der prototypischen Implementation wird die Gamification-Erweiterung schließlich evaluiert. Hierfür wird zunächst die Methodik der Evaluation konzeptioniert. Nach Durchführung der Evaluation werden die gesammelten Daten systematisch ausgewertet und mögliche Gefahren für die Validität betrachtet. Mithilfe dieser Daten sollen abschließend die Antworten auf die oben genannten Forschungsfragen determiniert werden.

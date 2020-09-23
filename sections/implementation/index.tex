@@ -1,0 +1,65 @@
+\chapter{Prototypische Implementation}\label{ch:implementation}
+
+Für die Implementation der Gamification-Erweiterung wurden für die Hauptanwendung\footnote{GitHub. \url{https://github.com/inloop-gamified/inloop} (Abgerufen am 1.9.2020)} und das Beispielaufgaben-Repository\footnote{GitHub. \url{https://github.com/inloop-gamified/inloop-java-repository-example} (Abgerufen am 1.9.2020)} jeweils einen öffentlichen Fork auf GitHub erzeugt, in welchem die Integration der Erweiterung stattfand. Hierzu wurden zunächst im später per Continuous Publishing einbezogenen Beispiel-Aufgabenrepository die in \Cref{fig:integration} gezeigten Änderungen im Buildprozess des Aufgabenrepositories umgesetzt. Hierbei wurde unter anderem der Buildschritt für das Checkstyle-Framework zusammen mit dem Regelwerk aus QualityReview ergänzt. Das Checkstyle-Regelwerk wurde nochmals leicht modifiziert, indem eine Regel entfernt wurde, welche in Java-Dateien auf das Vorhandensein von Package-Statements prüft. Dies könnte sonst möglicherweise mit dem TestRunner inferieren\footnote{GitHub. \url{https://github.com/st-tu-dresden/inloop/issues/288} (Abgerufen am 1.9.2020)}. Für die integrierten Regeln des Checkstyle Frameworks wurde anschließend anhand deren Dokumentation\footnote{Checkstyle. \url{https://checkstyle.sourceforge.io/checks.html} (Abgerufen am 1.9.2020)} eine Erklärungsdatenbank ermittelt, welche die Checkstyle-Regeln des QualityReview Frameworks auf zusätzliche Erklärungen abbildet. Diese Erklärungsdatenbank ist in Textform als \Cref{ch:edb} beigefügt und wird in die INLOOP-Anwendung per Datenbank-Migration dynamisch integriert. Im Umsetzungsrahmen des Prototyps wurde Checkstyle ausgewählt, um das Konzept der Erklärungsdatenbank und der Code-Smell-Detektion in INLOOP zu evaluieren. Zu einem späteren Zeitpunkt können PMD und FindBugs/SpotBugs\footnote{Da FindBugs durch SpotBugs ersetzt wurde, müsste dies gegebenenfalls zusätzlich migriert werden.} mit relativ geringem Zeitaufwand ergänzt werden. Um die Abbildung der Code-Smells auf die Erklärungsdatenbank zu realisieren, wurde ein Checkstyle-Parser implementiert, welcher die XML-Baumstruktur der Checkstyle-Ausgabe auf ein persistierbares Violation-Modell analog zu \Cref{fig:ekd-violations} überführt. Für eine Ergänzung von PMD und FindBugs/SpotBugs müssten analog eigene Parser implementiert werden, welche die genutzten Regeln auf bestehende Erklärungen in der Datenbank abbilden, wobei diese gegebenenfalls durch weitere Erklärungen ergänzt werden müssten.
+
+Als weitere Funktionsgrundlage wurden die in \Cref{sec:models} beschriebenen weiteren Modelle der Persistenzschicht auch in INLOOP integriert. Hierbei wurden die Teilkomponenten in einer Komponente \enquote{medics} entsprechend der Komponentenansicht in \Cref{fig:components} zusammengefasst. Außerdem wurde die Notifikationsarchitektur nach Pull-Prinzip (\Cref{fig:notification-middleware}) mithilfe eines Kontextprozessors integriert. In der \enquote{rewards} Teilkomponente der Gamification-Erweiterung wurde eine Schnittstelle zur Verfügung gestellt, mithilfe derer Nutzer bestimmte \enquote{Badges} erhalten können. Die daraus resultierende Neuberechnung der Punkte und Level eines Spielers wurde als rechenintensiverer Prozess an einen Worker-Prozess analog zu \Cref{p:skalierbarkeit} ausgelagert. Auf Grundlage dieser Backend-Funktionalitäten konnten nun die Nutzerschnittstellen implementiert werden, welche im nachfolgenden näher beschrieben werden sollen.
+
+\paragraph{Anmerkung.} Bei der Konzeption und Gestaltung der Webseiten wurden bestimmte Prinzipien der Nutzbarkeit befolgt. So wurde insbesondere auf die Einfachheit der Nutzeroberfläche und eine nahtlose Integration der Erweiterung in die Basis-Anwendung geachtet. Außerdem wurde das weit verbreitete Prinzip der \enquote{magischen Nummer Sieben} nach Miller \cite{miller_magical_1956} verwendet, um Nutzer bei der Bedienung nicht zu überfordern und eine möglichst gute Perzeption der Funktionsweisen des Game-Designs zu ermöglichen. Das Prinzip besagt, dass Nutzer unterschiedliche Informationen in Nutzeroberflächen nur solange ideal wahrnehmen, wie deren Anzahl nicht $7 \pm 2$ überschreitet.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-leaderboard.png}
+\caption{Täglich aktualisiertes Leaderboard mit Suchfunktion, Avataren und dynamischer Rangänderungsanzeige.}\label{fig:screenshot-leaderboard}
+\end{figure}
+
+\noindent In \Cref{fig:screenshot-leaderboard} ist ein Screenshot der UI-Komponente des Leaderboards gezeigt. Die direkt aus den Punkten eines Spielers resultierende Rangänderung wird hierbei nächtlich berechnet, als rechenintensiver Prozess wiederholt ausgelagert an einen der Worker-Prozesse. Ein Nutzer kann somit seinen eigenen täglichen Fortschritt anhand der aufgestiegenen oder abgestiegenen Ränge erkennen. Mit der angebrachten Suchleiste kann ein Nutzer nach anderen Nutzern suchen und diese bei Bedarf als seine Kollegen hinzufügen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-tasks.png}
+\caption{Navigationsleiste und Aufgabenansicht.}\label{fig:screenshot-tasks}
+\end{figure}
+
+\noindent Wie in \Cref{fig:screenshot-tasks} sichtbar, integriert die Gamification-Erweiterung auch ihre eigene Navigationskomponente, mit welcher die gesonderten Seiten der Gamification-Erweiterung (Wartezimmer, Ranglisten, Profilseite, Errungenschaften, Wiki über Code-Doktoren) besucht werden können. Hieran gut sichtbar ist die weitgehende Separierung der Funktionalitäten und Webseiten der Erweiterung von der Basis-Anwendung durch eine Trennung der Kontexte. Eine der Stellen, bei der die Integration der Gamification-Erweiterung direkt in der Schnittstelle der Basis-Anwendung stattfinden musste, ist die Aufgabenliste. Hier werden die erreichbaren Punkte einer Aufgabe dem Nutzer entsprechend angezeigt.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-solution-list.png}
+\caption{Lösungsansicht mit erreichten Punkten und Notifikation.}\label{fig:screenshot-solution-list}
+\end{figure}
+
+\noindent Reicht ein Nutzer nun eine Lösung ein, erhält er zunächst eine Notifikation über das Erreichen von Punkten durch die Abgabe sowie eine Information über die erreichten Punkte in der Liste der Lösungen (\Cref{fig:screenshot-solution-list}). Hierbei ist nur die oberste Lösung hervorgehoben, um zu signalisieren, dass nur die aktuellste Lösung zu den erreichbaren Punkten beiträgt. Im gezeigten Beispiel erreichte der Nutzer 800 von 1000 Punkten.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-waiting-room.png}
+\caption{Wartezimmer mit dem Gesundheitszustand einer Lösung (roter Button).}\label{fig:screenshot-waiting-room}
+\end{figure}
+
+\noindent Um nun die Punktzahl seiner Lösung zu verbessern, kann ein Nutzer ein Wartezimmer besuchen, in dem er seine aktuellen Lösungen sieht sowie deren Gesundheitszustand. Dieses Wartezimmer ist in \Cref{fig:screenshot-waiting-room} gezeigt.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-consultation.png}
+\caption{Konsultation mit der Anzeige der Zeile und Beschreibung aus der Erklärungsdatenbank zu einer Detektion.}\label{fig:screenshot-consultation}
+\end{figure}
+
+\noindent Vom Wartezimmer gelangt der Nutzer in eine Konsultation mit den Code-Doktoren. Wie in \Cref{fig:screenshot-consultation} gezeigt, erhält der Nutzer hier ein visuelles Feedback der gefundenen Violations, indem die dazugehörige Codezeile gezeigt wird sowie die zur Violation aus der Erklärungsdatenbank ermittelte Erklärung des Problems. Je nach dem Schweregrad der Violation wird diese mit 100 Punkten (Schweregrad error), 50 Punkten (Schweregrad warning) oder 0 Punkten (Schweregrad information) von der erreichbaren Punktzahl abgezogen. Somit wird ein faires Punktesystem gewährleistet, bei dem Nutzer, welche mit besserer Codequalität entwickeln, am meisten durch Punkte belohnt werden.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-progress.png}
+\caption{Freigeschaltete Badges, Avatare und Level in den Spielerdetails und die Anzeige von Kollegen.}\label{fig:screenshot-progress}
+\end{figure}
+
+\noindent In der Fortschrittsansicht eines Nutzers (\Cref{fig:screenshot-progress}) sieht dieser seine Errungenschaften, sein erreichtes Level, seinen durch eine gesonderte Ansicht auswählbaren Avatar sowie seine im Leaderboard ausgewählten Kollegen. Die Beschreibungen der erreichbaren Errungenschaften sind hierbei als einfache Rätsel gedacht, beigefügt unter \Cref{tab:errungenschaften}. Die erreichbaren Level sind außerdem an das Narrativ angelehnt und unter \Cref{tab:level} aufgelistet. Die Level repräsentieren den Fortschritt des Nutzers und sind an den Werdegang eines ambitionierten Code-Doktors angelehnt. So beginnt der Nutzer als \enquote{Student} und kann über verschiedene Level bis zum \enquote{Medical Director} aufsteigen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{screenshot-wiki.png}
+\caption{Informationsseite über detektierbare Code Smells, deren Identifikator und Erklärung aus der Erklärungsdatenbank.}\label{fig:screenshot-wiki}
+\end{figure}
+
+\noindent Möchte ein Nutzer mehr über die Code-Doktoren erfahren oder sich über die einzelnen möglichen Violations aus der Erklärungsdatenbank informieren, so kann er eine Wiki-Seite (gezeigt in \Cref{fig:screenshot-wiki}) besuchen, auf der dies aufgelistet ist. Analog zu den Beschreibungen des Konzepts zur Kategorisierung von Violations wird jedem Code-Doktor eine spezielle Profession zugeordnet sowie den dazugehörigen Violations. Die konkreten Professionen sind unter \Cref{tab:code-doctors} beigefügt. Dies konkludiert die prototypische Implementation von Kernelementen des Konzeptes aus \Cref{ch:konzept}.
+
+\paragraph{Selektivität und Repräsentativität des Prototyps.} Nicht alle im Konzept vorgeschlagenen Ga\-mi\-fi\-ca\-tion-Elemente wurden hierbei integriert, so zum Beispiel die Möglichkeit, dass ein Patient \enquote{sterben} und danach nicht mehr geheilt werden kann, oder das Code-Smell-Quiz und die Fragen zu Code Smells anderer Nutzer, welche jeweils die nun implementierte, einfache Konsultation noch erweitern können. Für eine vollständige Integration des Konzeptes müssten diese Elemente noch ergänzt werden. Eine statistische Auswertung der aufgetretenen Violations ist im Statistiken-Modul analog zur Anforderungsspezifikation nahtlos auf Grundlage der persistierten Modelle möglich, um eine Analyse der Nutzerinteraktion der Gamification-Erweiterung in Produktion durch das Lehrpersonal zu realisieren. Um generell festzustellen, inwiefern die Ziele dieser Arbeit anhand des Konzeptes erreicht werden konnten, kann eine Evaluation anhand der prototypischen Implementation dennoch mit hinreichender Aussagekraft und Fokus auf die Erschließung von verschiedenen Gamification-Elementen durchgeführt werden.

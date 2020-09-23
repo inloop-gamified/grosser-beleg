@@ -1,0 +1,24 @@
+
+\section{Teaching Clean Code}
+
+Dietz et al. befassten sich mit den Forschungsfragen, wie die Programmierung von \enquote{Clean Code}, also Code mit hoher Konformität zu Codierungsrichtlinien, in einem universitären Kontext gelehrt werden kann und wie dies mit einer zunehmenden Anzahl an Studierenden skalierbar umsetzbar ist. Dazu gehen die Autoren auf Probleme ein, die in der Lehre von Clean Code im universitären Kontext bestehen. Über die Integration eines didaktischen Konzeptes auf Grundlage von persönlichem Feedback sammelten Dietz et al. Erkenntnisse über die Strukturierung und Auswahl von Codierungsrichtlinien. Mithilfe dieser empirischen Auswahl wird schließlich eine Grundlage für deren Integration in einem E-Learning-System wie ArTEMiS \cite{krusche_artemis_2018}, einem INLOOP ähnelnden E-Learning-System für Softwaretechnologie der Technischen Universität München, mit Fokus auf der Verbesserung der Codequalität gegeben.
+
+\subsubsection{Herausforderungen in der universitären Lehre}
+
+Dietz et al. beschreiben, dass Studierende der Informatik häufig aufgrund der Lehrstruktur des Studiengangs nicht ausreichend motiviert würden, sich über die praktische Applikation von theoretischen Konzepten hinweg autodidaktisch mit der qualitativen Verbesserung des eigenen Codes zu befassen, weil dieser oft nach der Entwicklung vergessen oder \enquote{weggeworfen} würde. Motiviert hierdurch analysierten Dietz et al., wie die Einhaltung von Codierungsrichtlinien in einem universitären Kontext, ähnlich dem dieser Arbeit, gelehrt werden kann. So integrierten sie ein didaktisches Konzept in den Präsenzbetrieb einer Lehrveranstaltung mit den folgenden drei Kernelementen:
+
+\begin{itemize}
+\item Interaktive Diskussion von Refaktorisierungskandidaten in der Vorlesung zwischen den Studierenden und dem Vorlesenden anhand von Lösungen zu Aufgaben
+\item Detaillierte Code Reviews von Lösungen der Übungsgruppen durch Lehrpersonal
+\item Integration einer Aufgabenstellung in die mündliche Prüfung, bei der Refaktorisierungskandidaten in einem unbekannten Code-Schnipsel erkannt werden sollen
+\end{itemize}
+
+\noindent Dieses didaktische Konzept erprobten die Autoren an der Universität Bamberg mehrere Jahre und evaluierten schließlich mithilfe von statischer Codeanalyse die messbaren Änderungen in der Konformität des eingereichten Codes zu einem festen Regelwerk. Sie stellten als Tendenz fest, dass sich die allgemeine Struktur des Codes verbesserte, während andere Regelverstöße zunahmen, wobei die Autoren diese Zunahmen teilweise der Art der Aufgabe attribuieren \cite[S. 3]{dietz_teaching_2018}.
+
+Bei diesem Konzept spielen die personellen Ressourcen eine große Rolle, so dass bei der Umsetzung jedes der drei Kernelemente Lehrpersonal vonnöten ist. Mit einer steigenden Teilnehmerzahl in den Informatik-Studiengängen steigt damit auch der Bedarf an den personellen Ressourcen zur Umsetzung eines solchen Konzeptes, wodurch der Bedarf einer skalierbareren Lösung entsteht.
+
+\subsubsection{Auswahl von Codierungsrichtlinien}\label{sec:qualityreview}
+
+Um die Skalierbarkeit des Konzepts zu verbessern, schlagen Dietz et al. vor, die Erfahrungen aus der Umsetzung des Konzepts in eine Wissensbasis zu überführen \cite{dietz_teaching_2018} und auf Grundlage dieser eine automatisierte statische Codeanalyse durchzuführen. Die Autoren verfassten die Wissensbasis als Buch unter dem Titel \enquote{Java by Comparison: Become a Java Craftsman in 70 Examples.} mit den am weitesten verbreiteten Problemen inklusive Codebeispielen und Erklärungen \cite{harrer_java_2018}.
+
+Anhand der universitären Wissensbasis erstellten die Autoren ein Meta-Tool, welches in Summe etwas mehr als 100 Regeln der Codeanalyseframeworks Checkstyle, PMD und FindBugs/SpotBugs kombiniert und genutzt werden kann, um Codierungsrichtlinien, welche sich für einen universitären Kontext eignen, automatisiert in E-Learning-Systeme zu integrieren. Bei der Zusammenstellung der Richtlinien verfolgen Dietz et al. die Maxime, diese möglichst sinnvoll für alle Lerntypen auszuwählen und die Anzahl der falsch-positiven Detektionen gering zu halten. Bestimmte Programmierstile sollen darüber hinaus nicht forciert werden. Das entwickelte Meta-Tool ist unter dem Namen QualityReview auf GitHub\footnote{QualityReview. \url{https://github.com/LinusDietz/QualityReview} (Abgerufen am 13.6.2020)} verfügbar und beinhaltet Regelsätze für die einzelnen statischen Analysetools.

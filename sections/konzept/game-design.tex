@@ -1,0 +1,132 @@
+
+\section{Game-Design}\label{sec:game-design}
+
+Auf Grundlage der in den vorigen Sektionen vorgestellten Konzepte zur Integration der statischen Codeanalyse in INLOOP kann nun ein Gamification-Konzept erstellt werden, welches dazu dienen soll, die semantischen Detektionen weiter aufzubereiten und den Nutzer dazu zu motivieren, die Detektionen zu lesen, zu verstehen und schließlich selbst umzusetzen. Gemäß dem in \Cref{sec:gamification-frameworks} vorgestellten Octalysis-Ansatz soll dafür im Folgenden ein nutzerorientiertes Game-Design erstellt werden. Hierzu wird zunächst eruiert, welche Bedürfnisse und Ziele des Nutzers motiviert werden sollen (Leitmotive). Anschließend wird hierum ein Narrativ entwickelt, um hierzu schließlich gezielt Gamification-Elemente auszuwählen.
+
+\subsection{Leitmotive}
+
+Als wesentlicher Teil der funktionalen Anforderungen aus \Cref{sec:funktionale-anforderungen} soll der Nutzer Spaß und Interesse an der Durchführung von Refaktorisierungen am eigenen Code haben. Eine Frustration des Nutzers durch wiederholtes Scheitern soll möglichst vermieden werden und kleine Fortschritte belohnt werden, um Frust zu vermeiden. Rätsel können die Neugier des Nutzers wecken und das Interesse an der Refaktorisierung amplifizieren. Der Octalysis-Ansatz bietet hierbei eine gute Richtlinie für die Auswahl von Gamification-Elementen und die Einschätzung von deren Wirkungsweisen auf den Nutzer.
+
+\subsection{Narrativ}\label{sec:narrativ-konzept}
+
+Beispielsweise können witzige und interessante Narrative dabei helfen, dass Nutzer sich noch mehr in die Thematik der Refaktorisierung vertiefen und dabei durch zwischenzeitliches Schmunzeln erfrischt werden. Ein solches Narrativ soll im Folgenden konzipiert werden. Wie in \Cref{sec:gamification-elemente} beschrieben, eignen sich sinnvolle Narrative für den Einsatz als Gamification-Element, um die im Game-Design zusammengestellten Aktionen miteinander zu verknüpfen und ihnen dabei Tiefe und Relevanz zu verleihen. Im ausgewählten Narrativ der Gamification-Erweiterung sollen die auf INLOOP eingereichten Lösungen als \enquote{Patienten} behandelt werden, wobei die Patienten krank oder gesund sein können und der Gesundheitszustand eines Patienten der Codequalität der dazugehörigen Lösung entspricht. Lösungen mit vielen detektierten schwerwiegenden Code Smells sind somit \enquote{todkranke} Patienten, während Lösungen mit hoher Konformität zu den festen Codierungsrichtlinien \enquote{gesund} sind. Der Nutzer nimmt hierbei die Rolle eines Arztes ein und versucht, seine eigenen Patienten (seine eingereichten Lösungen) von den Verletzungen der Codierungsrichtlinien zu heilen. Das Narrativ soll dabei aber keinesfalls leidvoll, sondern vor allem humoristisch orientiert sein, gestützt durch witzige Parallelen zur Realität.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{narrative.png}
+\caption{
+    Ein Banner auf der Startseite, welches die \enquote{Code Doctors} vorstellt. Ursprüngliche Gestaltung der Illustration von Freepik\footnotemark.
+}\label{fig:narrative}
+\end{figure}
+\footnotetext{Freepik. \url{https://www.freepik.com/free-vector/flat-nurse-team_4387619.htm} (Abgerufen am 14.9.2020)}
+
+\noindent Eine dieser Parallelen soll durch die \enquote{Code Doctors}, also \enquote{Code-Ärzte} (nicht zu verwechseln mit Code-Dokumentation) geschaffen werden. Jeder Code Doc hat seine eigene, individuelle Profession. So gibt es einen allgemeinen Chirurgen, der sich zum Beispiel um gebrochene Knochen eines Patienten, also um die groben strukturellen Code Smells kümmert. Außerdem gibt es einen Schönheitschirurgen, welcher sich um die Schönheitsprobleme des Patienten, repräsentiert durch stilistische Code Smells, kümmert und einen Allgemeinmediziner, der verschiedene andere Probleme behandelt. Krankenschwestern helfen bei allem anderen, zum Beispiel beim Zurechtfinden in der Praxis, also die Erklärung von den einzelnen Gamification-Elementen, oder bei der Terminfindung, genauer der Initiierung einer \enquote{Untersuchung} (Code-Smell-Analyse) durch den Arzt. Jeder Code Doc hat dabei seinen eigenen Namen und einen kurzen Steckbrief, um dem gesamten Narrativ Glaubwürdigkeit zu verleihen.
+
+Nutzer haben nun auf Grundlage dessen die Möglichkeit, ihre Lösungen einer ärztlichen Untersuchung zu unterziehen. Hierbei sollen sie sich in ein Wartezimmer begeben können, um die anwesenden Patienten zu sehen, wobei dies die jeweils aktuellsten Lösungen zu einer jeden Aufgabe sind. Gab es bereits eine \enquote{Voruntersuchung} zu einer vorherigen Lösung einer Aufgabe, so soll hierbei der Gesundheitszustand der vorherigen Variante angezeigt werden. Der Nutzer soll nun die Aufgabe übernehmen, den Lösungen zur \enquote{Genesung} zu verhelfen, indem er sich den gesundheitlichen Problemen (Code Smells) annimmt.
+
+\subsection{Progressivität}\label{sec:progressivitaet}
+
+Während der Nutzung von INLOOP soll Studierenden das Gefühl des Fortschrittes und der Verbesserung der eigenen Kompetenzen als psychologisches Grundbedürfnis (beschrieben in \Cref{sec:gamification-motivator}) vermittelt werden, um die intrinsische Motivation bei der Verbesserung der Codequalität zu amplifizieren. Hierzu sollen im Folgenden mögliche Gamification-Elemente vorgestellt werden, welche auf unterschiedliche Weise eine Progressivität vermitteln und verschiedene Faktoren aus dem nutzerorientierten Octalysis-Framework einbeziehen.
+
+\subsubsection{Konsultationen}\label{sec:konsultationen}
+
+Zur Einsicht der Code Smells, die den Gesundheitszustand einer Lösung beeinträchtigen, kann der Nutzer in der Rolle eines beobachtenden (angehenden oder lernenden) Doktors im Wartezimmer einen Patienten in eine Konsultation \enquote{hereinbitten}. In dieser Konsultation erhält der Nutzer eine Übersicht über den Code der Lösung und an welcher Stelle Code Smells detektiert wurden. Je nach der Art des jeweiligen Code Smells wird dieser nun dem Nutzer vom Code Doc übermittelt, der sich auf diesen (entsprechend zur Profession) spezialisiert hat. Dabei zeigt der Code Doc dem Nutzer, an welcher Stelle ein Code Smell detektiert wurde und wie er diesen beheben kann, narrativ repräsentiert durch ein \enquote{Rezept}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{recipe.png}
+\caption{Nutzer erhalten Rezepte von spezialisierten \enquote{Code Doctors} zur Verbesserung einer eingereichten Lösung.}\label{fig:recipe}
+\end{figure}
+
+\noindent \Cref{fig:recipe} zeigt, wie ein solches Rezept dem Nutzer präsentiert werden kann. Das Rezept nutzt die Nachricht aus der adaptierten Detektion des Codeanalysetools sowie die genaue Zeile und die Wichtigkeit der Detektion. Außerdem beinhaltet die Präsentation die aus der Erklärungsdatenbank bezogene Erklärung zu dieser Detektion. Da es sich hierbei um einen stilistischen Code Smell handelt, welcher als solcher in der Erklärungsdatenbank klassifiziert wird, ist der zuständige Code Doctor im Rahmen des Narratives der plastische Chirurg, da sich ein solcher vorrangig um das \enquote{Aussehen} des Patienten kümmert. Grobe strukturelle Verstöße werden hingegen vom Chirurgen behandelt, alle weiteren generellen Verstöße vom Allgemeinmediziner.
+
+\paragraph{Code-Smell-Suche nach \cite{dos_santos_cleangame_2019}.} Durch das Aufzeigen des konkreten Fehlers erhält der Studierende die Möglichkeit, diesen direkt im Code zu beheben und damit seinen Patienten zu heilen. Die Konsultation kann jedoch bei Bedarf noch durch unterschiedliche Darstellungsstufen der Code Smells erweitert werden. Beispielsweise kann die Sichtbarkeit der Zeilennummer oder der konkreten Erklärung eingeschränkt werden. Hierdurch soll der Studierende, ähnlich zu dem in \Cref{sec:cleangame} vorgestellten Konzept, selbst herausfinden, an welcher Stelle eine Lösung Code Smells beinhaltet oder welche Art von Code Smell sich hinter einer konkreten Zeile versteckt. Zusammen hiermit kann nach Octalysis der Gamification-Faktor \enquote{Unpredictability and Curiosity} (siehe \Cref{fig:octalysis}) einbezogen werden. Um die Nutzererfahrung zu verstärken, kann so der Zufall auch visuell durch ein \enquote{Glücksrad} symbolisiert werden, wobei von mehreren möglichen Darstellungsvarianten des Code Smells eine Konkrete zufällig ausgewählt wird. Für eine genauere Auflistung könnte der jeweilige Code Doctor nochmals aufgefordert werden, genauere Untersuchungen auszuführen, sodass dann die jeweiligen Zeilennummern oder der Typ des Code Smells gezeigt werden, beispielsweise durch den Einsatz von Punkten.
+
+\subsubsection{Punkte}
+
+Um die Code Docs zu bitten, eine genauere Aufschlüsselung der Zeilennummern (durch weitere Untersuchungen) oder den konkreten Typ des Code Smells (abhängig vom Zufall) zu zeigen, muss der Nutzer hierfür Punkte ausgeben. Dies bedient die Gamification-Faktoren \enquote{Development and Accomplishment} sowie \enquote{Ownership and Possession} nach Octalysis. Die Punkte erhält ein Nutzer hierbei durch folgende Interaktionen:
+
+\begin{itemize}
+\item Durch das Einreichen von Lösungen, welche die Unit Tests der jeweiligen Aufgabe bestehen, abzüglich der Punkte, die als \enquote{Gesundheitskosten} aufgrund der vorliegenden Code Smells je nach Wichtigkeit hiervon abgezogen werden
+\item Durch \enquote{Rückerstattung von der Krankenkasse}, wenn ein Rezept eingelöst wurde und der Code Smell eines Patienten beseitigt wurde
+\item Durch das Freischalten von Badges, die in \Cref{sec:badges} weiter beschrieben sind
+\end{itemize}
+
+\noindent Die Möglichkeiten, Punkte zu erreichen, müssen für den Nutzer hierbei klar ersichtlich sein, um Verwirrung zu vermeiden. Erreicht ein Nutzer Punkte, so kann dies über entsprechende Notifikationen in INLOOP realisiert werden.
+
+\subsubsection{Badges}\label{sec:badges}
+
+Badges sind eine Möglichkeit, Punkte zu erhalten und werden analog zum Game-Design bei bestimmten Handlungen vergeben, die den Zielen der Gamification dienen und den zugrundeliegenden Spielregeln (Gamefulness) folgen. Im Folgenden sind mögliche Handlungen aufgelistet, die beispielsweise durch Badges weiter motiviert werden könnten:
+
+\begin{itemize}
+\item Das Betrachten bestimmter Informationsansichten, wie zum Beispiel einer Informationsansicht zu den Code Doctors anhand den von diesen behandelten Code Smells
+\item Das Einreichen einer besonders guten Lösung, die keine oder nur wenige Code Smells beinhaltet
+\item Das erstmalige Ausprobieren einer Funktionalität des Game-Designs, wie zum Beispiel das erstmalige Starten einer Konsultation
+\item Die Nutzung von Möglichkeiten zur sozialen Interaktion mit anderen Studierenden
+\end{itemize}
+
+\noindent Im Zentrum steht hierbei vor allem die Belohnung der Auseinandersetzung mit besonderen Aktivitäten, die vom regulären Einreichen von Lösungen abweichen und auf die Kommunikation der Codierungsrichtlinien oder die generelle gegenseitige Motivation an der Bearbeitung von Aufgaben hinwirken. Gleichzeitig können die Aufgabenstellungen auch so vage formuliert sein, dass der Nutzer zum Rätseln animiert wird und herausfinden möchte, wie diese entsprechenden Badges erhalten werden können.
+
+\subsubsection{Level und Fortschrittsbalken}
+
+Ein weiteres progressives Gamification-Element kann durch Level repräsentiert werden. Je mehr Punkte ein Nutzer hat, desto höher ist sein Level. Fortschrittsbalken können dieses Level repräsentieren und auf das nächsthöhere hinweisen, um ein Bedürfnis zu erzeugen, dieses durch weitere Verbesserungen der Codequalität zu erreichen. Dabei können die erreichbaren Level gut in das Narrativ integriert werden. Entsprechend der Rahmenhandlung kann der Nutzer als Studierender anfangen und sich über die Ernennung als Doktor über Karrierestufen vom Facharzt über den Oberarzt bis hin zum Chefarzt oder ärztlichen Direktor verbessern.
+
+\subsubsection{Progressive Leaderboards}\label{sec:leaderboards}
+
+Level, Punkte und Badges sollen die Errungenschaften und den Fortschritt des Studierenden nach außen zeigen. In INLOOP ist es jedoch bisher nicht möglich, Informationen über andere Nutzer einzusehen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{leaderboard.png}
+\caption{UI-Konzept eines progressiven Leaderboards in Form einer Tabelle, die Nutzer nach ihren erreichten Punktzahlen auflistet.}\label{fig:leaderboard}
+\end{figure}
+
+\noindent Über progressive Leaderboards wird der Fortschritt des Studierenden für jeden anderen Nutzer der Plattform sichtbar. In Ergänzung zum bereits in anderen Gamification-Konzepten umgesetzten, rangbasierten Leaderboard wird dieses um eine progressive Komponente ergänzt, die in \Cref{fig:leaderboard} zu sehen ist und aus Rennspielen entnommen ist. Genauer ist hiermit die Rangänderung gemeint, die neben dem Rang im Leaderboard angezeigt wird. Sie ermöglicht nicht nur eine Momentanaufnahme des eigenen Rangs, sondern motiviert den Fortschritt nochmals, indem die Rangänderung (beispielsweise pro Tag) zusätzlich angezeigt wird.
+
+\subsection{Soziale Interaktion}\label{sec:soziale-interaktion}
+
+Bei der Betrachtung des Nutzungskonzeptes von INLOOP fällt auf, dass jeder Nutzer isoliert von anderen Nutzern Aufgaben bearbeitet und dadurch keine direkte soziale Interaktion auf der Plattform stattfindet. Die in der vorigen Sektion vorgestellten progressiven Leaderboards brechen diese Isolation auf, indem sie gezielt Informationen anderen Nutzern zugänglich machen und erstmalig eine soziale Interaktion auf INLOOP ermöglichen. Diese soziale Interaktion soll durch weitere Gamification-Elemente gestärkt werden und zu einem der zentralen intrinsischen Motivatoren nach dem Octalysis-Framework werden. Hierfür werden im Folgenden einige weitere Gamification-Elemente in das Konzept eingebracht.
+
+\subsubsection{Avatare}
+
+In \Cref{sec:gamification-elemente} wurde das Gamification-Element Avatare bereits vorgestellt. Nutzer sollen eine Auswahl an Avataren erhalten, wobei die Komplexität der Nutzerschnittstelle und der Auswahlmöglichkeiten variieren kann. Avatare sollen den Nutzer repräsentieren und es diesem ermöglichen, zum virtuellen Profil und dessen Fortschritt eine persönliche Beziehung aufzubauen. Eine weitere Möglichkeit wäre die Konfigurierbarkeit des Profils mit einem echten Profilbild, wobei allerdings sichergestellt werden muss, dass keine urheberrechtlich geschützten oder anstößigen Bilder hochgeladen werden können. Außerdem wahren Avatare die Privatsphäre des Nutzers, aus welchem Grund diese im Rahmen der Umsetzung zu präferieren sind.
+
+\subsubsection{Auswahl von Kollegen}
+
+Auf Grundlage von Avataren können weitere soziale Elemente integriert werden, beispielsweise eine Freundeslisten-Funktion. Im professionellen Kontext als Arzt im Rahmen des Narratives werden diese Freunde als \enquote{Kollegen} bezeichnet. Ein Nutzer hat hierbei die Möglichkeit, nach anderen Nutzern zu suchen und diese in seinem eigenen Profilbereich, in dem auch sein Avatar, Level, Badges und Punkte sichtbar sein können, als Kollegen aufzuführen und deren Fortschritt nachzuverfolgen. Hierbei kann dies so umgesetzt werden, dass der gewählte Kollege dies zunächst bestätigen muss, oder, so dass das Hinzufügen direkt geschieht (vgl. \Cref{sec:models}). Dies soll auch die Kompetitivität fördern, indem Nutzer dazu motiviert werden, ihre Kollegen, welche sie möglicherweise persönlich kennen, in ihrem Fortschritt oder Rang zu übertreffen.
+
+\subsubsection{Fragen zu Lösungen anderer Nutzer}\label{sec:quizzes}
+
+Weiteres Erkenntnispotenzial verbirgt sich hinter der Isolation des eingereichten Codes selbst. Bedingt dadurch, dass Nutzer Lösungen anderer nicht plagiieren sollen, erhalten Nutzer lediglich Zugang zum Quellcode der \textit{eigenen} Lösungen. Analog zu den Code-Smell-Quizzes aus \cite{dos_santos_cleangame_2019} könnte es von Vorteil sein, wenn Nutzer Code anderer lesen und verstehen müssen, um so zu verstehen, wie Code Smells die Lesbarkeit von Lösungen verringern können. Um zu vermeiden, dass Nutzer Code aus fremden Lösungen verwenden, um selbst Aufgaben zu bestehen, könnte ein Nutzer beispielsweise nur Zugang zu Lösungen bekommen, die er selbst schon bestanden hat. Analog zu den in \Cref{sec:cleangame} beschriebenen CleanGames könnte ein Code-Smell-Quiz zu diesen Lösungen integriert werden. Im Rahmen des Narratives könnten hierbei Patienten untersucht werden, die aufgrund ihres schlechten Gesundheitszustands gestorben sind (vgl. \Cref{sec:scarcity}).
+
+\subsection{Risiko und zeitliche Knappheit}\label{sec:scarcity}
+
+Wie in der vorigen Sektion erwähnt, sollen Patienten auch \enquote{sterben} können, wenn diese zu viele Code Smells beinhalten oder über eine längere Zeit nicht geheilt werden konnten. Stirbt ein Patient zu einer Aufgabe, so hat ein Nutzer nicht mehr die Möglichkeit, die Punktzahl zu dieser Aufgabe zu verbessern. Als Bedingung, ob eine Lösung als \enquote{gestorben} gekennzeichnet wird, kann die Punktzahl herangezogen werden. Erreicht eine Lösung keine Punkte, also werden von der erreichbaren Punktzahl so viele Punkte für die Code Smells abgezogen, dass keine Punkte übrig bleiben, so könnte sie als gestorben gekennzeichnet werden. Dieses Konzept repräsentiert die Gamification-Komponente \enquote{Loss and Avoidance} aus dem Octalysis Framework, indem ein Nutzer nun nicht mehr unbegrenzt Zeit hat, einen Patienten zu heilen, oder der Patient auch sofort sterben kann, wenn der Nutzer nicht auf eine hinreichende Konformität achtet. Entsprechend müssen die erreichbaren Punktzahlen der Aufgaben so gewählt werden, dass dieser Sonderfall nicht zu häufig auftritt, um mögliche Frustrationen bei den Nutzern zu vermeiden. Beispielsweise könnte die Punktzahl für Exam-Aufgaben in INLOOP zunächst auf 3000 bis 4000 Punkte festgesetzt und anschließend anhand der statistischen Daten nachjustiert werden. Außerdem könnte der Punktabzug für wiederholte Code Smells desselben Typs, zum Beispiel das wiederholte Vergessen von Klammern, graduell verringert werden, um zu vermeiden, dass das häufige Auftreten eines Fehlers zu übermäßigem Punktabzug führt.
+
+\subsection{Dialogkonzept}
+
+Um die konzeptuellen Elemente der vorigen Sektionen anzuwenden und hierfür in konkrete bestehende Dialoge von INLOOP zu integrieren, wurde eine Dialoglandkarte angefertigt.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 555 232]{aktivitaeten.pdf}
+\caption{Konkrete beispielhafte Dialoglandkarte für die Integration der Gamification-Elemente in bestehenden Dialogen von INLOOP.}\label{fig:aktivitaeten}
+\end{figure}
+
+\noindent Die in \Cref{fig:aktivitaeten} gezeigte Dialoglandkarte zeigt den bestehenden zentralen INLOOP-Workflow, bei dem ein Nutzer sich zunächst einloggt, dann eine Aufgabe über die Aufgabenliste wählt, diese in einem Editor mit der Aufgabenbeschreibung bearbeitet und einreicht, wonach er seine eingereichten Lösungen sehen und diese gegebenenfalls reiterieren kann, beispielsweise, wenn die Unit-Tests oder der Kompilierprozess nicht erfolgreich waren. Hinzu kommen nun weitere, optionale Dialoge der Gamification-Erweiterung, beginnend mit einer Darstellung der erreichbaren Punkte in der Aufgabenliste und der Möglichkeit, in einer Wiki-Ansicht bestimmte Informationen über die Gamification-Erweiterung zu erhalten, zum Beispiel die Möglichen Verstöße inklusive deren Erklärungen. Außerdem können von hieraus auch die in \Cref{sec:quizzes} erläuterten Quizzes gestartet werden. Führt ein Nutzer hierbei bereits eine Aktion aus, die dazu führt, dass er eine Errungenschaft erhält, wird über einen modularen Notifikationsdialog die dazugehörige Notifikation eingeblendet. Dies ist jedoch unabhängig von der aktuellen Ansicht, so dass Notifikationen prinzipiell in jeder Ansicht eingeblendet werden können. Gibt ein Nutzer eine Aufgabe ab, so hat er zusätzlich die Möglichkeit, die erreichten Punkte der Abgabe zu sehen. Nun hat er die Möglichkeit, die Lösung direkt zu überarbeiten, beispielsweise, wenn der Kompilierungsprozess gescheitert ist. Zusätzlich jedoch, wenn alle Tests erfolgreich waren, kann der Nutzer seine Lösung über einen gesonderten Warteraum oder direkt in einer Konsultation bezüglich der detektierten Code Smells analysieren und von dort aus direkt zur Überarbeitung der Lösung gelangen, um mehr Punkte zu erhalten. Seinen Gesamtfortschritt kann der Nutzer in einer Fortschrittsansicht einsehen. Hierhin gelangt der Nutzer direkt über die Navigationsleiste oder über die progressiven Leaderboards, in denen sich der Nutzer mit anderen vergleichen kann. In der Fortschrittsansicht selbst kann der Nutzer seine (in den Leaderboards) gewählten Kollegen anzeigen lassen und selbst einen Avatar auswählen beziehungsweise auch seine erreichten und erreichbaren Errungenschaften anzeigen lassen. Die unterschiedlichen Dialoge haben unterschiedliche Intentionen, so dass zum Beispiel die Wiki-Ansicht zur Information über Codequalität beiträgt, die Komponenten der Progressivität zusätzliche Kompetitivität über das Punktesystem induzieren und schließlich Konsultationen über eigene Verstöße aufklären sollen und gleichzeitig über eine Reiteration der Lösung zum Gewinn von mehr Punkten (adaptiert aus \cite{haendler_serious_2019}) und dadurch zur Motivation der Verbesserung der Codequalität beitragen sollen.
+
+\subsection{Einordnung nach Octalysis}
+
+Die beschriebenen Gamification-Elemente des Game-Designs wurden so ausgewählt, dass die Gamification-Faktoren nach Octalysis hiervon vollständig abgedeckt werden, um eine möglichst ausgewogene Gamification zu erreichen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth, bb=0 0 400 397]{octalysis-concept.pdf}
+\caption{Einordnung der gewählten Gamification-Elemente nach dem Octalysis Gamification Framework von Chou \cite{chou_actionable_2019}.}\label{fig:octalysis-concept}
+\end{figure}
+
+\noindent In \Cref{fig:octalysis-concept} wird dies sichtbar. Das konzipierte Game-Design verwendet ausgewählte Gamification-Elemente, die sowohl extrinsisch (Avatare, Kauf mit Punkten) als auch intrinsisch (Soziale Interaktion) wirken. Außerdem sind sowohl negativ wirkende Elemente (Risiko und zeitliche Knappheit) als auch positiv wirkende Elemente, wie das allgegenwärtige Narrativ, enthalten. Das Narrativ dient als verbindendes Element zwischen den einzelnen Gamification-Elementen und leitet den Nutzer durch die Anwendung, mit Hinblick auf die Motivation der Refaktorisierung über die Erkennung und Behebung von Code Smells.
+
+\subsection{Einordnung nach Bloom}
+
+Wie in \Cref{tab:bloom} und der dazugehörigen Sektion diskutiert, liegt ein zentraler Aspekt in der Kreation einer didaktisch wirkungsvollen Anwendung in der Evaluation der notwendigen Kompetenzen. Anhand der von Bloom et al. hierfür entwickelten Taxonomie soll auch für das vorliegende Game-Design berücksichtigt werden, dass dieses auch die höheren Lernziele (wie der Ansatz von Händler und Neumann) erfüllen kann. Die Möglichkeit, Refaktorisierungskandidaten zunächst selbst zu suchen und dann gegebenenfalls Hilfe (gegen den Handel von Punkten) zu erhalten, Code anderer Nutzer zu lesen und zu verstehen sowie selbst Clean Code zu entwickeln und dafür Punkte zu erhalten, zielt ab auf unterschiedliche Lernziele nach Blooms Taxonomie, so dass der Nutzer selbst zunächst die Fakten und Zusammenhänge zwischen Clean Code und Code Smells verstehen müssen, diese anhand seiner eigenen Lösungen und der Lösung anderer analysieren und schließlich diese Prinzipien auf die weitere Programmierung selbstständig anwenden soll.

@@ -1,0 +1,186 @@
+% the following command is only required if the thesis is written in german
+\RequirePackage[ngerman=ngerman-x-latest]{hyphsubst}
+
+% change to english for english theses
+\documentclass[
+  ngerman,
+  symmetric,
+  cdfont=off,
+  numbers=noenddot
+]{tudscrreprt}
+\usepackage[bitstream-charter]{mathdesign}
+\addtokomafont{disposition}{\rmfamily}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{isodate}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage[toc, page]{appendix}
+\usepackage{hyphenat}
+
+\usepackage[
+    style=alphabetic,
+    backend=biber,
+    url=false,
+    doi=false,
+    isbn=false,
+    hyperref,
+]{biblatex}
+\addbibresource{bibliography.bib}
+\AtEveryBibitem{%
+    \clearfield{note}%
+}
+
+\usepackage[hidelinks]{hyperref} % makes all links clickable but hides ugly boxes
+\usepackage[capitalise,nameinlink,noabbrev]{cleveref} % automatically inserts Fig. X in the text with \cref{..}
+
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\usepackage{svg}
+
+% if you need mathy stuff
+\newtheorem{lem}{Lemma}
+\crefname{lem}{Lemma}{Lemmas}
+\newtheorem{thm}{Theorem}
+\crefname{thm}{Theorem}{Theorems}
+\newtheorem{defs}{Definition}
+\crefname{defs}{Def.}{Defs.}
+
+\usepackage{blindtext}
+
+%\usepackage{tudscrsupervisor} % if you want to copy the sources of the task description into the thesis
+
+\usepackage{csquotes}
+
+
+
+\usepackage{caption}
+\captionsetup{font=normalfont,labelfont=normalfont,labelsep=space}
+\usepackage{floatrow}
+\floatsetup{font=normalfont}
+\floatsetup[table]{style=plaintop}
+\captionsetup{singlelinecheck=off,format=hang,justification=raggedright}
+\DeclareCaptionSubType[alph]{figure}
+\DeclareCaptionSubType[alph]{table}
+\captionsetup[subfloat]{labelformat=brace,list=off}
+
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{tabulary}
+\usepackage{tabu}
+\usepackage{longtable}
+\usepackage{multirow}
+
+\usepackage{quoting}
+
+\usepackage[babel]{microtype}
+
+\usepackage{xfrac}
+
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep}
+
+\usepackage{ellipsis}
+\let\ellipsispunctuation\relax
+
+\input{lst.tex}
+
+\newtheorem{researchquestion}{Forschungsfrage}
+\crefname{researchquestion}{Forschungsfrage}{Forschungsfragen}
+
+\newenvironment{conditions}
+  {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
+  {\end{tabular}\par\vspace{\belowdisplayskip}}
+
+\usepackage{float}
+
+% \usepackage{glossaries}
+% \input{glossar.tex}
+
+\renewcommand\appendixtocname{Anhang}
+\renewcommand\appendixpagename{Anhang}
+
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+
+\begin{document}
+
+  \pagenumbering{Roman}
+
+  \faculty{Fakultät Informatik}
+  \department{}
+  \institute{Institut für Software- und Multimediatechnik}
+  \chair{Lehrstuhl für Softwaretechnologie}
+  \title{%
+      Erstellung und Evaluation eines Gamification-Konzeptes zur
+      Verbesserung der Codequalität eingereichter Lösungen in INLOOP
+  }
+
+  \thesis{evidence}
+
+  \author{Philipp Matthes}
+  \matriculationnumber{4605459}
+  \matriculationyear{2016}
+  \dateofbirth{12.3.1997}
+  \placeofbirth{Chemnitz}
+
+  \course{Diplom Informatik (PO 2010)}
+
+  \supervisor{%
+      Dipl.-Inf. Martin Morgenstern%
+      \and M.Sc. Julian Catoni%
+  }
+  \professor{Prof. Dr. rer. nat. habil. Uwe Aßmann}
+  \date{17.9.2020}
+  \maketitle
+
+  \newpage
+
+  \includepdf[pages=-]{task_description/task_de.pdf}
+
+  \newpage
+
+  \confirmation
+
+  \tableofcontents
+
+  \listoffigures
+  \addcontentsline{toc}{chapter}{\listfigurename}
+
+  \listoftables
+  \addcontentsline{toc}{chapter}{\listtablename}
+
+  % \printglossary[type=\acronymtype]
+  % \printglossary
+
+  \input{sections/einleitung.tex}
+
+  \input{sections/grundlagen/index.tex}
+  \input{sections/related-work/index.tex}
+  \input{sections/analyse/index.tex}
+  \input{sections/konzept/index.tex}
+  \input{sections/implementation/index.tex}
+  \input{sections/evaluation/index.tex}
+
+  \input{sections/zusammenfassung.tex}
+
+  \newpage
+
+  \pagenumbering{roman}
+
+  \printbibliography[heading=bibintoc]\label{sec:bibliography}%
+
+  \begin{appendices}
+  \input{sections/appendix/medics.tex}
+  \input{sections/appendix/edb.generated.tex}
+  \input{sections/appendix/errungenschaften.tex}
+  \input{sections/appendix/level.tex}
+  \end{appendices}
+
+\end{document}

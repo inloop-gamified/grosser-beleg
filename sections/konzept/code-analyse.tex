@@ -1,0 +1,106 @@
+\section{Codeanalyse}
+
+\subsection{Regelwerk für Codierungsrichtlinien}
+
+Grundlage der Codeanalyse soll das in \Cref{sec:qualityreview} beschriebene, im akademischen Kontext entwickelte QualityReview Framework von Dietz et al. \cite{dietz_teaching_2018} sein. Im Folgenden soll beschrieben werden, wie das Framework für diese Arbeit wiederverwendet werden kann.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 547 217]{qualityreview.pdf}
+\caption{Architektur des QualityReview Frameworks von Dietz et al. \cite{dietz_teaching_2018}.}\label{fig:qualityreview}
+\end{figure}
+
+\noindent In \Cref{fig:qualityreview} ist die Architektur des Analyseframeworks gezeigt. Um eine beliebige Java-Codebasis (in \Cref{fig:qualityreview} illustriert durch Foo.java und Bar.java) mithilfe des Frameworks zu analysieren, werden die darin enthaltenen Java-Dateien in einen Gradle\footnote{Gradle. \url{https://gradle.org/} (Abgerufen am 11.8.2020)} Buildprozess gegeben. Für jedes der drei unterstützten Codeanalysetools (PMD, FindBugs/SpotBugs, Checkstyle) wird hierbei eine Spezifikation der Eingaben und der Ausgaben vorgenommen. Die eingegebenen Java-Dateien werden entsprechend der Spezifikation vom jeweiligen Codeanalysetool analysiert und das Analyseergebnis schließlich in einer standardisierten Form wie zum Beispiel XML ausgegeben.
+
+Teil der Spezifikation ist das Regelwerk, nach dem die Codeanalysetools Code Smells detektieren. Das Eingabeformat des Regelwerks unterscheidet sich hierbei je nach Codeanalysetool (siehe \Cref{fig:qualityreview}). Checkstyle und PMD werden mit einem eigenen XML-Regelwerk konfiguriert, während FindBugs/SpotBugs lediglich mit Prüfparametern wie dem \enquote{reportLevel} konfiguriert wird. Diese Konfigurationen sind das Kernelement des Frameworks und sollen im Folgenden so adaptiert werden, dass diese in INLOOP integriert werden können und die in \Cref{sec:spezifikation} erläuterten Anforderungen erfüllen.
+
+\subsection{Integrationskonzept der statischen Codeanalyse}
+
+Die Prüfung auf funktionelle Korrektheit von Lösungen in INLOOP über Unit Tests wird durch eine besondere Komponente durchgeführt, welche sich \textit{TestRunner} nennt. Wird eine Lösung in INLOOP eingereicht, so initialisiert dieser TestRunner eine virtualisierte Laufzeitumgebung, in der die Dateien der Lösung dynamisch durch jUnit\footnote{jUnit 5. \url{https://junit.org/junit5/} (Abgerufen am 11.8.2020)} Tests getestet werden. Hierzu wird innerhalb eines individuellen Docker Containers ein Ant\footnote{Ant. \url{https://ant.apache.org/} (Abgerufen am 11.8.2020)} Buildprozess durchgeführt, welcher die hierzu notwendigen Schritte und die zu inkludierenden Dateien spezifiziert. Die Ant Buildkonfiguration wird hierbei zusammen mit der Aufgabe über Continuous Publishing \cite{morgenstern_continuous_2018} dynamisch von einem externen Git-Repository bezogen. Die Ausgabe der jUnit Testsuite wird wiederum im XML-Format gespeichert und schließlich vom TestRunner geparst, so dass die in der virtualisierten Laufzeitumgebung temporär abgelegten Ausgabedateien schließlich in der Datenbank von INLOOP persistiert werden.
+
+Da sowohl die dynamische Codeanalyse, als auch die statische Codeanalyse relativ (im Vergleich zur Bereitstellung anderer Funktionalitäten in INLOOP) rechenintensiv sind, sollten diese nicht blockierend ausgeführt werden. Genauer sollen diese Prozesse vom normalen Request-Response-Prozess der Webanwendung entkoppelt werden. Ein weiteres Problem ist die Ausführung von hochgeladenem, potenziell schadhaftem Code. Der TestRunner bietet für beide Probleme eine hinreichend gute Lösung durch die Virtualisierung des Betriebssystems über Docker Container und die entkoppelte Ausführung dieser über eigene Service-Worker-Prozesse. Daher soll im Folgenden gezeigt werden, wie die statische Codeanalyse zusätzlich zur dynamischen Codeanalyse im TestRunner konzeptuell integriert werden kann, um schließlich zu zeigen, wie hierbei das QualityReview Framework eingesetzt werden kann.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 432 196]{integration.pdf}
+\caption{Integrationskonzept des QualityReview Frameworks für die TestRunner Komponente von INLOOP.}\label{fig:integration}
+\end{figure}
+
+\noindent Das in \Cref{fig:integration} gezeigte Integrationskonzept ermöglicht die nahtlose Ergänzung der statischen Codeanalyse auf Grundlage des QualityReview Frameworks. Im Zentrum steht die bereits beschriebene TestRunner Komponente. Der durch diese gesteuerte Ant Buildprozess wird durch die Ausführung der Codeanalysetools PMD, Checkstyle und FindBugs/SpotBugs erweitert, wobei die Konfigurationen aus dem QualityReview Framework wiederverwendet werden. Die Spezifikation des Gradle Builds aus QualityReview wird hierzu auf eine Ant Spezifikation überführt. Nach der Ausführung des Ant Buildprozesses stehen die Ausgabedateien der statischen Codeanalysetools analog zum Gradle Buildprozess in standardisierter Form (XML) auf dem Dateisystem des virtualisierten Docker Containers zur Verfügung und können von hieraus für die weitere Verarbeitung verwendet werden.
+
+\subsection{Semantische Code-Smell-Extraktion}\label{sec:code-smell-extraktion}
+
+Mithilfe der im vorigen Abschnitt vorgestellten Architektur können Lösungen in INLOOP auf Verletzungen von Codierungsrichtlinien (Detektionen) statisch geprüft werden. Die Detektionen der Codeanalysetools sind dabei mehr oder weniger deskriptiv, beispielsweise beinhalten die Detektionen aus dem Checkstyle Tool (in der Version 7.6.1 aus dem QualityReview Framework) oder dem PMD Tool meist nur eine sehr kurze, prägnante Beschreibung des eigentlichen Fehlers und nie eine Beschreibung der zugrundeliegenden Maximen. Ein Studierender soll später jedoch nicht nur eine sehr kurze und potenziell missverständliche Meldung über die Detektion sehen (analog zur Anforderungsbeschreibung aus \Cref{sec:spezifikation}), sondern eine Erklärung erhalten, weshalb die zugrundeliegende, verletzte Codierungsrichtlinie möglicherweise eine Degradation der Codequalität zur Folge hat. Zur Illustration dessen soll folgender Java-Codeabschnitt aus einer hypothetischen Datei \enquote{Example.java} dienen.
+
+\vspace{\abovedisplayskip}
+
+\begin{lstlisting}[language = Java, firstnumber = 49]
+// ...
+public void do_something() {
+    if (conditionIsTrue)
+        callFunction();
+}
+// ...
+\end{lstlisting}
+
+\noindent Die Analyse durch Checkstyle mit der Checkstyle-Konfiguration aus dem QualityReview Framework detektiert hierbei unter anderem einen Verstoß gegen Codierungsrichtlinien in Zeile 51 und gibt die folgende XML-Datei aus.
+
+\vspace{\abovedisplayskip}
+
+\begin{lstlisting}[language = XML]
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="7.6.1">
+    <file name="/checker/input/Example.java">
+        <error line="51"
+               severity="error"
+               message="if construct must use {}s."
+               source="[URI].NeedBracesCheck"/>
+    </file>
+</checkstyle>
+\end{lstlisting}
+
+\noindent Bei der Analyse durch PMD wiederum wird unter anderem in Zeile 50 ein Verstoß gegen die Benennungskonventionen detektiert.
+
+\vspace{\abovedisplayskip}
+
+\begin{lstlisting}[language = XML]
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="[URL]/report_2_0_0.xsd"
+    version="6.2.0" timestamp="2020-08-12T09:23:06.378">
+    <file name="Example.java">
+        <violation beginline="51" endline="51"
+                   begincolumn="12" endcolumn="24"
+                   rule="MethodNamingConventions" ruleset="Code Style"
+                   class="Example" method="do_something"
+                   externalInfoUrl="[URL]#methodnamingconventions"
+                   priority="1">
+            Method names should not contain underscores
+        </violation>
+    ...
+    </file>
+</pmd>
+\end{lstlisting}
+
+\noindent Zu sehen ist, dass die Nachrichten der Detektionen zwar jeweils eine kurze Beschreibung des Code Smells geben, jedoch nicht, aus welchem Grund dies die Codequalität potenziell mindert. Im illustrierten Beispiel müssten bei einer Ergänzung einer Instruktion in Zeile 53 geschweifte Klammern ergänzt werden, um diese Instruktion zusammen mit der Instruktion in 52 konditionell auszuführen. Wird dies vergessen, könnte dies zu Fehlern aufgrund einer nichtkonditionellen Ausführung der Instruktion kommen. Außerdem sollten Methoden in \enquote{lowerCamelCase} statt, wie in Zeile 50 in \enquote{snake\_case}, geschrieben werden, um zu den Konventionen der Programmiersprache konsistent zu bleiben und die Lesbarkeit zu verbessern. Solche semantische Beschreibungen der Detektionen soll der Studierende erhalten, um einerseits die Verständlichkeit zu verbessern, aber auch, um die zugrundeliegenden Maximen von \enquote{Clean Code} zu lehren. Dies dient als Mensch-Computer-Schnittstelle für die weitere Kommunikation der Code Smells, um schließlich die Codequalität eingereichter Lösungen nachhaltig verbessern zu können.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 547 239]{integration2.pdf}
+\caption{Eine Architektur zur vereinheitlichten, semantischen Code-Smell-Extraktion auf Grundlage der Ausgaben von Codeanalysetools.}\label{fig:integration2}
+\end{figure}
+
+\noindent Die Codeanalysetools PMD, Checkstyle und FindBugs/SpotBugs inkludieren in deren standardisierten Ausgaben jeweils pro Detektion einen Identifikator für die Art des ausgelösten Detektionsmechanismus oder der zugrundeliegenden Codierungsrichtlinie. Auf Grundlage dessen ermöglicht die in \Cref{fig:integration2} gezeigte Architektur die Erweiterung der Detektionen um Erklärungen zu den Maximen. Da die Ausgabegrammatiken der Codeanalysetools stark voneinander abweichen, werden die detektierten Code Smells zunächst über einen jeweiligen, spezialisierten Parser in eine in der Datenbank von INLOOP persistierbare Form (ein \enquote{Set} von \enquote{Violations}) überführt. Hierzu wird die Wichtigkeit der Detektion in die drei Kategorien \enquote{information} für rein informative Detektionen, \enquote{warning} für mittelwichtige Detektionen und \enquote{error} für die wichtigsten Detektionen aufgeteilt. Die entsprechenden Parser bilden die Formate der Codeanalysetools hierauf ab. Beispielsweise werden die PMD-Prioritäten 1 und 2 auf die Wichtigkeit \enquote{error}, 3 und 4 auf \enquote{warning} und 5 auf \enquote{information} entsprechend zur Dokumentation der Prioritäten\footnote{PMD. \url{https://pmd.github.io/latest/pmd_userdocs_extending_rule_guidelines.html} (Abgerufen am 11.8.2020)} abgebildet. Die Detektionen werden schließlich ausgestattet mit einer jeweiligen textuellen Erklärung aus einer regelbasierten Erklärungsdatenbank, welche im Folgenden näher beschrieben werden soll.
+
+\subsection{Regelbasierte Erklärungsdatenbank}
+
+Um eine \enquote{Violation}, genauer die vereinheitlichte und persistierbare Abbildung der Codeanalysetool-Ausgaben, mit diesen textuellen Erklärungen zu ergänzen, werden die Identifikatoren (URIs) der Detektionen auf einen Identifikator der Erklärungsdatenbank und die dazugehörige textuelle Erklärung abgebildet.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 583 304]{edb.pdf}
+\caption{Beispielabbildung für die Adaption der Identifikatoren von Detektionen auf Codeanalysetools zur Ergänzung von Code-Smell-spezifischen Erklärungen.}\label{fig:edb}
+\end{figure}
+
+\noindent \Cref{fig:edb} zeigt die Adaption der Identifikatoren, um die Detektionen mit in der Datenbank hinterlegten Erklärungen zu ergänzen. Zu sehen ist, dass die Erklärungsdatenbank zwischen drei Kategorien unterscheidet, den strukturellen, stilistischen und generellen Verstößen. Prinzipiell können diese Kategorien bei der Umsetzung dieses Konzepts frei gewählt werden, beispielsweise nach einer anderen Unterteilung, zum Beispiel in \enquote{Bad Practice}, \enquote{Correctness}, \enquote{Vulnerability} oder \enquote{Performance}, analog zu den Detektionskategorien in FindBugs\footnote{FindBugs. \url{http://findbugs.sourceforge.net/bugDescriptions.html} (Abgerufen am 12.8.2020)}/SpotBugs\footnote{SpotBugs. \url{https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html} (Abgerufen am 14.9.2020)}. Die in \Cref{fig:edb} gezeigte Kategorisierung hängt zusammen mit der späteren Aufbereitung in Form eines Narratives, welches in \Cref{sec:narrativ-konzept} gezeigt wird. Außerdem frei wählbar sind die Identifikatoren der Erklärungen aus der Erklärungsdatenbank und damit die Granularität der Abbildung. Da die Abbildung zwischen den Identifikatoren der Codeanalysetools und den Identifikatoren der Erklärungen von der Parser-Infrastruktur (siehe \Cref{fig:integration2}) realisiert wird, können gemeinsame Schnittmengen im Regelsatz gebildet werden, die jeweils auf dieselbe Erklärung abbilden. Illustriert wird dies exemplarisch in \Cref{fig:edb} durch den PMD-Identifikator \enquote{MethodNamingConventions} und den FindBugs-Identifikator \enquote{NM\_METHOD\_NAMING\_CONVENTIONS}, welche beide auf die Erklärung hinter dem Erklärungsdatenbank-Identifikator \enquote{MethodNaming} abgebildet werden können, da den beiden Detektionsmechanismen dieselbe Maxime zugrunde liegt. Außerdem können in der Erklärungsdatenbank verhältnismäßig wenige oder viele Erklärungen hinterlegt sein, auf welche die Identifikatoren der Codeanalysetools abgebildet werden. Direkt abhängig davon ist jedoch die Spezifität der Erklärungen. Ein Nachteil des Konzeptes der Erklärungsdatenbank ist die Notwendigkeit der manuellen Erstellung der Abbildung in der Parser-Infrastruktur sowie die manuelle Erstellung der textuellen Erklärungen. Auf eine mögliche Strategie in der konkreten Implementation wird in \Cref{ch:implementation} eingegangen.

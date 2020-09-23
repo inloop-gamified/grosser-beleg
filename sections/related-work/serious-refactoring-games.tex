@@ -1,0 +1,76 @@
+\section{Serious Refactoring Games}\label{table:bloom-taxonomy-serious}
+
+Die Refaktorisierung von Code mit Hinblick auf die Verbesserung der Codequalität ist ein komplexer Prozess. Ein zu dem vorgestellten \enquote{CleanGame} Konzept ähnliches Serious Game konzipierten Händler und Neumann. Die Autoren betrachten die didaktische Komplexität der Refaktorisierung von Code anhand der Taxonomie von Bloom \cite{bloom_taxonomy_1956}\cite{anderson_taxonomy_2000}, welche Denkfähigkeiten geordnet nach der mentalen Beanspruchung, von \enquote{lower order thinking skills} wie dem Merken von Informationen bis hin zu \enquote{higher order thinking skills} wie der Evaluation und der Kreation kategorisiert. Händler und Neumann kommen dabei zu dem Ergebnis, dass die Refaktorisierung von Code alle der Kategorien in Blooms Taxonomie beansprucht \cite{haendler_serious_2019}. Diese Aufschlüsselung ist in \Cref{tab:bloom} gezeigt.
+
+\begin{table}[H]
+\caption{Kognitive Fähigkeiten bei der Refaktorisierung anhand von Blooms Taxonomie. Sinngemäß aus der tabellarische Darstellung in \cite[S. 3]{haendler_serious_2019} abstrahiert.}\label{tab:bloom}
+\begin{tabularx}{\textwidth}{{
+    >{\hsize=.5\hsize\linewidth=\hsize}X
+    >{\hsize=1.5\hsize\linewidth=\hsize}X
+}}
+\hline
+Stufe in Blooms Taxonomie & Beispiel für eine benötigte Fähigkeit bei der Refaktorisierung \\ \hline \hline
+1. Wissen & Die Regeln und Schritte für die Planung und die Durchführung der Refaktorisierung kennen. \\ \hline
+2. Verstehen & Die Regeln und Schritte für die Planung und die Durchführung der Refaktorisierung verstehen. \\ \hline
+3. Applikation & Die Regeln und Schritte für die Planung und die Durchführung der Refaktorisierung anwenden. \\ \hline
+4. Analyse & Den Quellcode eines Systems analysieren und hieraus Kandidaten für die Refaktorisierung ableiten. \\ \hline
+5. Bewertung & Mehrere Möglichkeiten der Refaktorisierung von Refaktorisierungskandidaten miteinander vergleichen und sich für die bestmögliche Lösung entscheiden. \\ \hline
+6. Kreation & Entwicklung und Verbesserung von Systemen und Arbeitsweisen, welche die Refaktorisierung von Softwaresystemen vereinfachen oder strukturieren. \\
+\hline
+\end{tabularx}
+\end{table}
+
+Anhand dieser Erkenntnis kritisieren die Autoren, dass bisherige didaktische Lösungen für die Lehre des Refactorings nur künstliche, kleine Aufgaben beinhalten, die aber nicht ausreichend seien, um tiefergehende Kompetenzen wie analytisches Denken und die Bewertung von Lösungen zu vermitteln. Stattdessen schlagen sie ein Spiel vor, bei dem dem Nutzer ein größeres, in dessen Kontext funktionales, Codefragment präsentiert wird und es daraufhin des Nutzers Aufgabe ist, die in diesem Codefragment vorhandenen Code Smells zu beseitigen, ohne die von außen erkennbare Funktionalität abzuändern. Hierbei kann der Nutzer gegen einen Codequalitätsbenchmark (Technische Schulden) oder gegen echte Mitspieler antreten. In diesem Kontext beschreiben Händler und Neumann eine technische Grundlage für das Game-Design solcher \enquote{Serious Refactoring Games} auf Basis von existierenden Codeanalyse-Tools (Test-Frameworks, Softwarequalitätsmetriken) und Regressionstests.
+
+Die vorgeschlagene Lösung von Händler und Neumann hat das Ziel, insbesondere auch die höherliegenden Stufen 3-6 der Taxonomie von Bloom (\Cref{table:bloom-taxonomy-serious}) didaktisch zu vermitteln, da sich existierende Lösungen eher auf die darunter liegenden Stufen orientierten, analysieren die Autoren. Durch die Konfrontation mit Codefragmenten aus \enquote{echten} Anwendungen werde eine praxisnähere Situation simuliert, bei der Nutzer die Artefakte zunächst analysieren müssen und danach Alternativen evaluieren müssen, um die Code Smells zu beseitigen, wodurch höhere Lernziele in Blooms Taxonomie repräsentiert würden.
+
+\subsection{Game-Design}
+
+Der Spieler erhält den Quellcode der zu refaktorisierenden Datei(en). Des Spielers Aufgabe ist es hiernach, den Quellcode auf mögliche zu refaktorisierende Stellen (Refaktorisierungskandidaten) zu untersuchen und diese auszuwählen. Wenn der Spieler einen oder mehrere Kandidaten ausgewählt hat, muss er Modifikation(en) des Quellcodes planen und ausführen, die den jeweiligen ausgewählten Kandidaten behandelt. Signalisiert der Spieler, dass dieser die Modifikation(en) abgeschlossen hat, wird die editierte Datei im ursprünglichen System integriert und auf Funktionalität geprüft (Regressionstest). Nun kann es zwei Ergebnisse dieser Interaktion geben:
+
+\begin{itemize}
+\item Der Programmcode ist valid und alle Regressionstests waren erfolgreich. Infolgedessen wird die Qualität des refaktorisierten Codes analysiert und ein Score für die technischen Schulden ermittelt.
+\item Einer oder mehrere Regressionstest schlagen fehl oder der Programmcode ist anderweitig invalid. Die Qualität des refaktorisierten Codes wird nicht analysiert und es wird kein Score für die technischen Schulden ermittelt.
+\end{itemize}
+
+\noindent Das ermittelte Ergebnis wird dem Spieler präsentiert und dieser erhält, wenn vorhanden, den zum refaktorisierten Code berechneten Score. Der Spieler erhält nun die Option, weitere Modifikationen an den bereits ausgewählten Kandidaten vorzunehmen oder nach weiteren Kandidaten zu suchen. Das Spiel ist nach dem beschriebenen Ablauf in Spielzüge unterteilt, welche nach deren Abschluss als inkorrekt, korrekt oder erfolgreich gelten können:
+
+\begin{itemize}
+\item Inkorrekt: der Quellcode ist invalid und konnte nicht auf Funktionalität oder Qualität geprüft werden.
+\item Korrekt: der Quellcode ist valid, die technischen Schulden haben sich aber im Vergleich zum vorigen Spielzug nicht verringert.
+\item Erfolgreich: der Quellcode ist valid und die technischen Schulden haben sich im Vergleich zum vorigen Spielzug verringert.
+\end{itemize}
+
+\noindent Händler und Neumann schlagen mehrere erweiterte Spielmodi vor, darunter ein Einzelspielermodus, wobei der Spieler gegen die Uhr spielt sowie mehrere Mehrspielermodi (parallel vs. alternierend, kompetitiv vs. kollaborativ).
+
+\subsubsection{Ziele eines Serious Refactoring Games}
+
+Das oberste Ziel des Spielers besteht darin, das Codefragment auf eine solche Weise zu refaktorisieren, sodass die Funktionsfähigkeit der Software weiterhin durch die Regressionstests verifiziert werden kann, sich in diesem Kontext also nach außen nicht verändert, während die technischen Schulden minimiert werden.
+
+\subsubsection{Technische Realisation}
+
+Das von Händler und Neumann konzipierte Softwaresystem ist in die folgenden Komponenten unterteilt:
+
+\begin{itemize}
+\item Die \textbf{Game Control} koordiniert die Interaktion von Spielern und dem Testframework bzw. der Qualitätsanalyse.
+\item Das \textbf{Test Framework} führt Regressionstests auf der eingereichten Software aus.
+\item Der \textbf{Quality Analyzer} analysiert die Qualität des Codefragments.
+\item Die \textbf{GUI Component} kapselt das visuelle Feedback und die gesamte visuelle Interaktion.
+\end{itemize}
+
+\noindent Als Grundlage schlagen Händler und Neumann eine Messung der internen technischen Qualität über die Akkumulation eines TD-Scores (\Cref{begriff:td-score}) vor.
+
+\subsection{Ergebnisse}
+
+Händler und Neumann planen die Evaluation des vorgestellten Konzeptes im universitären Kontext im Rahmen zukünftiger Arbeit \cite[S. 9]{haendler_serious_2019}. Zu dem vorgestellten Konzept der Serious Refactoring Games wurden noch keine experimentellen Resultate publiziert (Stand: 30. Juni 2020), so auch nicht in der in \cite{haendler_interactive_2019} von Händler et al. auf Grundlage dessen fortgeführten Arbeit, welche sich im Kontrast zu den vorgestellten Serious Refactoring Games auf die Realisation der Interaktivität über ein direktes Feedback im Rahmen eines Tutoring-Systems fokussiert.
+
+\subsection{Framework}\label{sec:haendler-framework}
+
+In \cite{haendler_framework_2019} diskutieren Händler und Neumann die Serious Refactoring Games und das oben genannte Tutoring-System erneut und konzipieren anhand dessen ein Framework, welches die Lernziele in Blooms Taxonomie möglichst gut abbildet. Hierbei soll das vorgestellte Serious Refactoring Game durch folgende Konzepte aus dem Tutoring-System komplementiert werden:
+
+\begin{itemize}
+\item Die Bereitstellung von direktem, interaktiven Feedback durch die Präsentation der Resultate von Regressionstests.
+\item Der interaktive Vergleich des durch den Code zu reflektierenden Referenz-UML-Diagramms (Soll-Zustand) mit einem aus dem eingereichten Code ermittelten UML-Diagramm (Ist-Zustand).
+\end{itemize}
+
+\noindent Ähnlich zu den in \Cref{sec:cleangame} beschriebenen CleanGames soll hierdurch ein weiterer Spielmodus umgesetzt werden, dessen Ziel die Eliminierung von Code Smells aus einem gegebenen Codefragment ist, während die Regressionstests auf eine fortexistierende Funktionalität und damit die Validität der Refaktorisierung prüfen. Als eine weitere Möglichkeit zur Ergänzung des Frameworks nennen Händler und Neumann die Integration eines Quiz über Refaktorisierung, ähnlich dessen in CleanGames, welches in \Cref{sec:cleangame} näher beschrieben wurde.

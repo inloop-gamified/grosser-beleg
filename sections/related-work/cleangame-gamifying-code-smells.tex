@@ -1,0 +1,50 @@
+
+\section{CleanGame: Gamifying the Identification of Code Smells}\label{sec:cleangame}
+
+Wie in \Cref{sec:refaktorisierung} bereits näher beschrieben, bietet die Refaktorisierung eine Möglichkeit, die Softwarequalität zu verbessern, indem interne Komponenten abgeändert werden, während die externe Funktionalität unverändert bleibt. Dieser Prozess inkludiert eine systematische Suche und Behandlung von Refaktorisierungskandidaten. In welchem Maße eine Refaktorisierung durchgeführt werden kann und wie erfolgreich diese der Softwarequalität zugutekommt, hängt somit auch von der Menge und der Sinnhaftigkeit der gefundenen Refaktorisierungskandidaten ab. Auf Grundlage dieser Prämisse untersuchten dos Santos et al., wie die Suche von Refaktorisierungskandidaten in einem akademischen Kontext durch Gamification spielerisch motiviert werden kann und welche quantitativen Auswirkungen dies auf die Fähigkeit der Nutzer, Refaktorisierungskandidaten zu finden, haben kann \cite{dos_santos_cleangame_2019}.
+
+\subsection{Game-Design}
+
+Die von den Forschern hierzu entworfene Webanwendung trägt den Namen \enquote{CleanGame} und besteht aus einem Quiz über Code Smells und einem Spiel, bei dem Refaktorisierungskandidaten in Codeschnipseln gefunden werden sollen. Über das Quiz sollen die Kernkonzepte der Refaktorisierung reflektiert werden, während durch das andere Modul die Suche nach Refaktorisierungskandidaten trainiert werden soll. Das Softwaretool lässt sich in die Kategorie der Serious Games einordnen.
+
+\subsubsection{Code-Smell-Quiz}\label{sec:code-smell-quiz}
+
+Im Code-Smell-Quiz werden dem Nutzer Fragen zu ausgewählten Code-Smells gestellt. Die Forscher fokussieren sich hierbei auf die folgenden fünf konkreten Code-Smells, basierend auf einer Metaanalyse von Code Smells im akademischen und industriellen Kontext von Sharma und Spinellis \cite{sharma_survey_2017}:
+
+\begin{enumerate}
+\item \textbf{Large Class}: Hierunter fallen Klassen, welche zu viele Verantwortlichkeiten tragen. Dieses Anti-Pattern ist auch bekannt unter den Namen \enquote{Blob} oder \enquote{Gott-Klasse} \cite{sourcemakingcom_design_2020}.
+\item \textbf{Long Method}: Dies bezeichnet Methoden, welche zu viele Zeilen von Code beinhalten.
+\item \textbf{Divergent Change}: Hiermit beschreiben die Autoren eine Klasse, die sich im Verlauf der Entwicklung häufig und aus verschiedenen Gründen ändert.
+\item \textbf{Feature Envy}: Unter diesem Namen werden Klassen kategorisiert, welche deren Funktion hauptsächlich durch die Kommunikation mit anderen Klassen realisieren, also kaum eigene Funktionalität bereitstellen. Häufig steht dieses Anti-Pattern in Verbindung mit der Auslagerung von Daten-Klassen \cite{refactoringguru_data_2020}.
+\item \textbf{Shotgun Surgery}: Durch diese Bezeichnung beschreiben dos Santos et al. Modifikationen in Klassen, welche viele kleine Änderungen in anderen Klassen hervorrufen.
+\end{enumerate}
+
+\noindent Innerhalb des Quiz werden dem Nutzer Fragen zu diesen fünf Kategorien gestellt, wobei die Antwortmöglichkeiten festgelegt sind. Um den Frageprozess zu illustrieren, zeigen dos Santos et al. folgende Frage inklusive deren Antwortmöglichkeiten:
+
+\begin{quote}
+Um den Shotgun Surgery Code Smell zu beseitigen, können Refaktorisierungen verwendet werden. Welche der folgenden Refaktorisierungen würden Sie nutzen, um dies zu realisieren?
+
+\begin{itemize}
+\item[A] Vererbung mit einer Delegation ersetzen
+\item[B] Inline Class
+\item[C] Methoden extrahieren
+\item[D] Klasse extrahieren
+\end{itemize}
+\cite[sinngemäß übersetzt. S. 4, Abb. 1]{dos_santos_cleangame_2019}
+\end{quote}
+
+\noindent Um diese Frage, ohne zu raten, erfolgreich zu lösen, muss der Nutzer ein komplexes, vernetztes Fachwissen über Code Smells und Refaktorisierung besitzen. Zunächst muss der Nutzer wissen, worum es sich bei der \enquote{Shotgun Surgery} handelt und, dass das zugrundeliegende Problem dieses Anti-Patterns die Zersplitterung einer Verantwortlichkeit über verschiedene Klassen ist \cite{refactoringguru_shotgun_2020}. Eine Möglichkeit der Refaktorisierung wäre die Extraktion von zur Verantwortlichkeit gehörenden Methoden aus den verschiedenen Klassen und deren Reintegration in eine zentrale Klasse. Somit wäre Antwortmöglichkeit C bereits richtig. Durch die Migration der Methoden können jedoch auch Klassen entstehen, welche selbst keine Verantwortlichkeiten mehr besitzen. Diese Klassen werden als \enquote{Inline Class} \cite{refactoringguru_inline_2020}, meist auch als \enquote{Data Class} bezeichnet und fallen unter die Kategorie \enquote{Feature Envy}. Richtig wäre also auch Antwortmöglichkeit B, um die möglichen transitiven Konsequenzen aus der initialen Refaktorisierung zu behandeln. Dieses Beispiel illustriert, wie über den Ansatz der Autoren über ein Quiz komplexes vernetztes Fachwissen zur Refaktorisierung abgefragt, reflektiert und erlernt werden kann.
+
+\subsubsection{Verwendete Gamification-Elemente}
+
+Während des Quiz erhält der Nutzer Punkte für das richtige Beantworten einer Frage. Für das falsche Beantworten einer Frage bekommt der Nutzer Punkte abgezogen. Noch während des Quiz kann der Nutzer den durch seinen aktuellen Punktestand errechneten Rang in der Rangliste einsehen. Für eine Frage hat der Nutzer nur begrenzt Zeit zur Verfügung. Fragen können übersprungen werden, während Schnelligkeit bei deren Beantwortung durch einen Zeitbonus belohnt wird. Beantwortet der Nutzer einige aufeinander folgende Fragen richtig, so erhält er auch hierfür Bonuspunkte. Weiterhin sieht der Nutzer seinen eigenen Fortschritt über einen Fortschrittsbalken in der Webanwendung. Der Nutzer hat, nach \cite[S. 4, Abb. 1]{dos_santos_cleangame_2019} außerdem die Möglichkeit, sich zu registrieren und für den erstellten Account einen rudimentären Avatar anzulegen.
+
+\subsubsection{Code-Smell-Suche}
+
+Bei der zweiten Kernkomponente von CleanGame handelt es sich um eine Code-Smell-Suche, bei der dem Nutzer Code-Schnipsel gezeigt werden, zu denen er den passenden Code Smell aus einer festen Auswahl von Code Smells selektieren soll. Die Code-Smell-Suche ähnelt dem Quiz in deren Aufbau und Funktionsweise, denn auch hier erhält der Nutzer Punkte für richtige Antworten und bekommt Punkte für falsche Antworten abgezogen. Dies wird erweitert durch die Fähigkeit des Nutzers, die Punkte als Währung gegen Tipps einzutauschen. Ein Tipp kann die Angabe von Regeln sein, die mit dem Code Smell in Verbindung stehen, oder eine Einschränkung des zu betrachtenden Codeabschnittes, oder die dem Code Smell zugrundeliegende Definition.
+
+\subsection{Ergebnisse}
+
+Dos Santos et al. prüften ihr Konzept im akademischen Kontext anhand einer quantitativen Analyse über die Messung der durch die Probanden gefundenen Code Smells und einer qualitativen Analyse der persönlichen Einstellung der Nutzer gegenüber dem Game-Design. Bei der quantitativen Analyse zweier randomisierter Nutzergruppen, wobei die eine Nutzergruppe CleanGame und die andere Nutzergruppe eine IDE im Voraus zum Training der Identifikation von Code Smells nutzte, konnten die Nutzer der CleanGame-Gruppe nach dem Training doppelt so viele Code Smells identifizieren, wie Nutzer der IDE-Gruppe. Für die Selektion der Trainingsbeispiele und der Evaluationsbeispiele nutzten dos Santos et al. validierte Code Smells der Plattform \enquote{Landfill} \cite{palomba_landfill_2015}. In einer qualitativen Analyse über eine Umfrage ermittelten dos Santos et al., dass die Attitüde der Probanden gegenüber dem evaluierten Serious Game überwiegend positiv war. Als verbesserungswürdig schätzten Probanden unter anderem vor allem Probleme mit der Benutzeroberfläche ein, aber auch, dass kein direktes Feedback über die richtige Antwort einer Frage gegeben wurde und, dass die Punkte eines jeweiligen Nutzers öffentlich einsehbar waren. Als positiv schätzen die Probanden wiederum unter anderem vor allem die spielerische und interaktive Auseinandersetzung mit dem Thema ein sowie die Unterstützung beim Verstehen von Code Smells und die Kompetitivität. Die qualitative Evaluation der ästhetischen Wahrnehmung des Tools ergab weiterhin, dass durch den Ansatz der Autoren die Relevanz, die Lernwahrnehmung und die soziale Interaktion besonders betont würde.
+
+\noindent Die Autoren interpretieren diese Ergebnisse als Unterstützung der Hypothese, dass Gamification in diesem Kontext geeignet ist. Zu berücksichtigen ist jedoch, dass sowohl die qualitative als auch die quantitative Analyse nur mit 18 Probanden durchgeführt wurden und somit nur bedingt aussagekräftig sind. Daher merken dos Santos et al. an, dass die Ergebnisse weiterhin validiert werden müssen, um eine hinreichende Konfidenz über die Wirksamkeit des Effekts der Gamification im universitären Kontext zur Motivation von Refaktorisierung zu erhalten.

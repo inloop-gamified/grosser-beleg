@@ -1,0 +1,79 @@
+\section{Softwarequalität}
+
+In der folgenden Sektion werden die Grundlagen zum komplexen Begriff der Softwarequalität aufgeschlüsselt, um die Codequalität hierin schließlich systematisch einzuordnen und Möglichkeiten aufzuzeigen, diese in einem komplexen Softwaresystem abzubilden. Hierfür werden zunächst unterschiedliche Perspektiven erläutert, aus denen die Qualität einer Software betrachtet werden kann. Nachfolgend wird die Codequalität in eine dieser Perspektiven eingeordnet, um die Konsequenzen aus einer guten oder schlechten Codequalität für die Gesamtqualität der Software ableiten zu können und die Relevanz der Codequalität als zentrale Qualitätskomponente in der Gesamtqualität von Software zu zeigen. Außerdem wird beschrieben, wie deren Analyse über Codequalitätsmetriken funktionieren kann. Als zentraler Prozess in der Verbesserung von Softwarequalität wird schließlich der Vorgang der Refaktorisierung erklärt und mit dem Begriff der technischen Schulden in Verbindung gebracht sowie aufgezeigt, inwiefern dies automatisierbar ist.
+
+\subsection{Komponenten und Faktoren}
+
+Die Norm ISO/IEC 9126:2001 \cite{technical_committee_isoiec_jtc_1sc_7_software_and_systems_engineering_isoiec_2001}, aktualisiert durch ISO/IEC 25010:2011 \cite{technical_committee_isoiec_jtc_1sc_7_software_and_systems_engineering_isoiec_2011} beschreibt die Softwarequalität als komplexes Resultat aus dem Lebenszyklus von Software. Die Autoren unterteilen folgende Komponenten der Gesamtqualität von Software.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 549 277]{softwarequalitaet.pdf}
+\caption{Die Kaskade der Softwarequalitätskomponenten im Lebenszyklus von Software und deren Modellindikatoren nach ISO/IEC 9126:2001 \cite{technical_committee_isoiec_jtc_1sc_7_software_and_systems_engineering_isoiec_2001}.}\label{fig:softwarequalitaet}
+\end{figure}
+
+\paragraph{Die Prozessqualität} beschreibt die Qualität der in ISO/IEC/IEEE 12207:2017 \cite{technical_committee_isoiec_jtc_1sc_7_software_and_systems_engineering_isoiecieee_2017} normierten Prozesse (Beschaffung, Lieferung, Entwicklung, Betrieb und Wartung) des Lebenszyklus einer Software.
+
+\paragraph{Die interne und externe Qualität} wird von den Autoren beschrieben als die Charakterisierung der Software von einem internen bzw. externen Standpunkt, anhand der jeweiligen internen bzw. externen Anforderungen. \Cref{fig:softwarequalitaet} zeigt die in ISO/IEC 9126:2001 hierfür vorgeschlagenen Modellindikatoren (Funktionalität, Verlässlichkeit, Nutzbarkeit, Effizienz, Wartbarkeit und Portierbarkeit). Die interne Qualität wird hierbei über die Analyse der inneren Details der Software (Codebasis, statische und dynamische Modelle oder Dokumentation) festgestellt. Vice versa repräsentiert die externe Qualität die ohne Kenntnis dieser internen Details der Software messbare Qualität, beispielsweise durch funktionale Tests.
+
+\paragraph{Die durch Nutzung der Software feststellbare Qualität} wird durch die Autoren definiert als die Fähigkeit der Software, die Bedürfnisse des Nutzers zu befriedigen. Sie separieren dies in die Effektivität, die Produktivität, die Sicherheit und die Zufriedenstellung bei der Nutzung.
+\\
+
+\noindent Weiterhin wird von den Autoren illustriert, dass sich die oben genannten Komponenten in dieser Reihenfolge im Lebenszyklus der Software kaskadierend gegenseitig beeinflussen (siehe \Cref{fig:softwarequalitaet}). So ist die durch Nutzung feststellbare Qualität von der externen Qualität abhängig, diese hängt wiederum von der internen Qualität ab und die interne Qualität wird schließlich beeinflusst von der Prozessqualität.
+
+\subsection{Codequalitätsmetriken}
+
+Die Codequalität lässt sich analog zum oben beschriebenen Schema in die interne Qualität der Software einordnen und kann nach den Kriterien der ISO/IEC 9126:2001 (Funktionalität, Zuverlässigkeit, Nutzbarkeit, Effizienz, Wartbarkeit und Wiederverwendbarkeit) \cite{technical_committee_isoiec_jtc_1sc_7_software_and_systems_engineering_isoiec_2001} beurteilt werden. Um die Konformität des Codes zu den Kriterien der internen Softwarequalität zu messen, werden typischerweise die Implementationen der einzelnen Teilkomponenten der Software anhand von bestimmten Metriken analysiert. Das grundlegende Prinzip solcher Metriken ist die Erkennung von Fehlgestaltungen verschiedener Art im Code und in dessen Dokumentation. Hierbei spielen oft der Umfang, die Komplexität und der Stil des Codes eine Rolle. Zusätzlich können Metriken eingesetzt werden, welche die Entwurfsqualität der Anwendung analysieren, zum Beispiel durch die Messung der Tiefe von Vererbungen in objektorientierten Anwendungen \cite{rosenberg_software_nodate}. Traditionelle Implementationen solcher Metriken umfassen hierzu beispielsweise die Berechnung der zyklomatischen Komplexität (McCabe-Metrik), die Bestimmung der Anzahl von Schachtelungen und Statements, die Kalkulation des Verhältnisses von Code und Kommentaren oder die Länge des Programms \cite{stamelos_code_2002}. Die Wahl, Funktionsweise und Interpretation der Metriken ist vom Kontext, zum Beispiel von der verwendeten Programmiersprache, von den Anforderungen der Software oder von der Erfahrung des Entwicklers, abhängig. Für unterschiedliche Kontexte lassen sich somit unterschiedliche Modelle zur Codequalitätsanalyse entwerfen, deren Wirkung aus der Zusammensetzung und Parametrisierung resultiert.
+
+\subsection{Refaktorisierung}\label{sec:refaktorisierung}
+
+Genügt die Codequalität einer Software nicht mehr den Anforderungen der Softwarequalitätsziele, so bietet sich eine Refaktorisierung an. Händler und Neumann definieren den Begriff wie folgt:
+
+\begin{defs}
+Unter Refaktorisierung versteht man die Verbesserung der internen technischen Qualität eines [Software]systems durch die Modifizierung und Restrukturierung des Quellcodes, ohne das von außen sichtbare Verhalten zu verändern. \cite{fowler_refactoring_1999}
+\end{defs}
+
+\noindent Das von außen sichtbare Verhalten ist hierbei vom Standpunkt und vom Kontext abhängig. Wird beispielsweise eine Software anhand ihrer nach außen verfügbaren Schnittstellen untersucht, so kann die interne Struktur mit Beibehaltung der äußeren Schnittstellen gänzlich verändert werden. Bei der Betrachtung einer einzelnen Komponente desselben Software-Systems, zum Beispiel anhand eines Unittests, muss die sichtbare Signatur der Komponente jedoch bei den Änderungen beibehalten werden, um nach der obigen Definition als Refaktorisierung zu gelten.
+
+\subsection{Technische Schulden}
+
+Um die Notwendigkeit der Refaktorisierung innerhalb einer jeweiligen Softwarekomponente zu quantifizieren, akkumulieren viele automatisierte Codeanalyseframeworks, wie zum Beispiel SonarQube\footnote{SonarQube. \url{https://www.sonarqube.org/} (Abgerufen am 14.9.2020)}, anhand einer Auswahl von Codequalitätsmetriken und anderen Metriken einen so genannten TD-Score\label{begriff:td-score}, wobei TD für \underline{T}echnical \underline{D}ebt (technische Schulden) steht. Der Score setzt sich hierbei metaphorisch zusammen aus der geschätzten Zeit, die zur Refaktorisierung der jeweiligen detektierten Fehlgestaltung notwendig wäre.
+
+Die Art der Fehlgestaltungen kann hierbei jedoch stark variieren. Kruchten et al. unterteilen technische Schulden nochmals in Testschulden, menschliche Schulden, architekturelle Schulden, sich auf Abhängigkeiten beziehende Schulden, Dokumentationsschulden oder allumfassende amorphe Softwareschulden \cite{kruchten_technical_2012}. Kruchten et al. erklären darauf aufbauend, warum der errechnete TD-Score nicht mit den tatsächlichen technischen Schulden der Software gleichgesetzt werden sollte \cite{kruchten_technical_2012}. Die Gesamtheit von technischen Schulden sei nur schwierig durch statische Codeanalyseframeworks erfassbar, vor allem strukturelle und architekturelle Fehlgestaltungen. Zu beachten sei hierbei, dass sowohl die Codeanalyseframeworks als auch die zu analysierende Software dem technologischen Evolutions- und Alterungsprozess unterlägen.
+
+\subsection{Codierungsrichtlinien}
+
+Softwareentwickler können unterschiedliche Auffassungen von guter Codequalität haben. Hieraus lässt sich die Hypothese ableiten, dass Codequalitätsmetriken generell ungeeignet sind, um das Verständnis von guter Codequalität in allen Facetten zu modellieren. Pantiuchina et al. zeigten hierzu anhand eines Experimentes, dass die durch Metriken modellierbare Repräsentation von guter Codequalität nicht zwingend mit der Auffassung von Entwicklern übereinstimmt \cite{pantiuchina_improving_2018}.
+
+Aus der Sicht des Entwicklers betrachtet, kann es, abhängig von der Zusammensetzung und Parametrisierung der Codequalitätsmetriken, zu falsch-positiven und falsch-negativen Detektionen kommen. Dies ist jedoch nicht immer von der individuellen Auffassung des Entwicklers abhängig. Händler und Neumann nennen hierzu den Fall, dass es auch bei bewusst auf eine bestimmte Art und Weise implementierten Strukturen, beispielsweise bei Entwurfsmustern, zu falsch-positiven Detektionen kommen kann. Sie begründen dies in der inhärenten Komplexität der Detektionsmechanismen \cite{haendler_serious_2019}.
+
+\subsubsection{Konformität}
+
+Jan Rucks befasste sich im Rahmen seiner Diplomarbeit mit der Auswahl von geeigneten Codequalitätsmetriken für das sich an die Lehrveranstaltung Softwaretechnologie zeitlich anschließende Softwarepraktikum, wo die Codequalität einiger Gruppen durch SonarQube analysiert wird \cite{rucks_erstellung_2017}. Wegen der oben genannten Schwierigkeiten ist es nicht verwunderlich, dass es Rucks nicht gelang, die Qualität einer Software (halb)-automatisch anhand einer Zusammenstellung von Qualitätsmetriken in Form einer einzigen Metrik zu messen.
+
+Rucks evaluierte hierzu mehrere Metriken, welche bestimmte Teilaspekte der internen Softwarequalität modellieren sollen, darunter Flexibilität, Konformität, Sicherheit, Wiederverwendbarkeit, Testbarkeit, Modularität und Wartbarkeit. Rucks' Evaluation verglich dabei die Berechnungen der Metriken mit den Bewertungen der Tutoren zu der jeweiligen Gruppe sowie deren Selbsteinschätzung im Softwarepraktikum, um die Korrelation der Metriken mit der Softwarequalität zu bestimmen. Hierbei sei angemerkt, dass sowohl die Bewertungen der Tutoren als auch die Selbsteinschätzung der Gruppen gute Codequalität nicht ideal repräsentieren, was die Aussagekraft der darauf fußenden Evaluation beschränkt. Rucks destillierte aus der Evaluation dennoch als einzige signifikant mit den jeweiligen Einschätzungen der Gruppe korrelierende Metrik die der Konformität, welche sich wie folgt berechnen lässt:
+
+\begin{equation}\label{eq:konformitaetsmetrik}
+M_{CON} = 1 - \frac{N_{BLV} * 2 + N_{CRV} * 1,5 + N_{MAV} + N_{MIV} * 0,5}{N_{STA}}
+\end{equation}
+wobei:
+\begin{conditions}
+    M_{CON} & Konformitätsmetrik \\
+    N_{BLV} & Anzahl der Verletzungen von \enquote{Blocker}-Regeln \\
+    N_{CRV} & Anzahl der Verletzungen von \enquote{Critical}-Regeln \\
+    N_{MAV} & Anzahl der Verletzungen von \enquote{Major}-Regeln \\
+    N_{MIV} & Anzahl der Verletzungen von \enquote{Minor}-Regeln \\
+    N_{STA} & Anzahl von Statements
+\end{conditions}
+
+\noindent Analog zu den Teilkomponenten der in \Cref{eq:konformitaetsmetrik} beschriebenen Konformitätsmetrik berechnet sich diese aus dem Verhältnis der gewichteten Anzahl an Verletzungen von Codierungsrichtlinien zu der Gesamtanzahl an Statements. Die Gewichtung stammt vom durch SonarQube kategorisierten Schweregrad der jeweiligen Verletzung der Codierungsrichtlinien, von der schwerwiegendsten Art \enquote{Blocker}, über \enquote{Major}, \enquote{Minor} bis hin zur Einstufung als \enquote{Info}. Die Beobachtung, dass die Konformität, also die Einhaltung von bestimmten Codierungsrichtlinien, die Codequalität signifikant positiv beeinflusst, beschreiben auch Dietz et al \cite{dietz_teaching_2018}. Durch die Einhaltung solcher Richtlinien würde die Lesbarkeit des Codes erhöht und hierdurch dessen Wartbarkeit verbessert. Als Konsequenz hieraus verringerten sich die Wartungskosten der Software.
+
+% - Wang et al.: systematische Literaturreview
+
+\subsubsection{Detektion von Code Smells}\label{sec:code-smells}
+
+Mithilfe einer fundierten Auswahl von Codierungsrichtlinien ist es möglich, eine gegebene Software auf potenzielle Verstöße gegen diese Codierungsrichtlinien zu prüfen und dem Entwickler verständlich aufzuzeigen. Die detektierten Verstöße werden hierbei oft als \enquote{Code Smells}, also sinngemäß \enquote{schlechte Gerüche} bezeichnet. Als Synonym werden Code Smells auch einfach als \enquote{Smells} oder präziser als Refaktorisierungskandidaten bezeichnet. Die Analyse der Code Smells läuft hierbei ohne einen tatsächlichen Start der Anwendung, weshalb diese Technik auch als statische Codeanalyse bezeichnet wird. Tools wie Checkstyle\footnote{Checkstyle. \url{https://checkstyle.sourceforge.io/} (Abgerufen am 13.6.2020)}, PMD\footnote{PMD. \url{https://pmd.github.io/} (Abgerufen am 13.6.2020)} und FindBugs\footnote{FindBugs. \url{http://findbugs.sourceforge.net/} (Abgerufen am 13.6.2020)}/SpotBugs\footnote{SpotBugs. \url{https://spotbugs.github.io/} (Abgerufen am 14.9.2020)}\footnote{FindBugs wird nicht mehr weiterentwickelt und wurde durch SpotBugs ersetzt.} verwenden Pattern Matching, um Code Smells anhand von bestimmten Mustern zu finden und so dem Entwickler zusätzlich zu den meist bereits vom Compiler bereitgestellten Warnungen Hinweise auf potenzielle Degradationen der Codequalität zu geben. Wegen der großen Variabilität der zugrunde liegenden Codierungsrichtlinien gibt es eine Vielzahl von möglichen Unterteilungen von Code Smells. Fowler et al. unterteilen Code Smells beispielsweise in 22 Kategorien \cite{fowler_refactoring_1999}.
+
+\subsubsection{Automatisierung}
+
+Mithilfe einer automatisierten Detektion von Refaktorisierungskandidaten können Degradationen der Codequalität frühzeitig erkannt und behoben werden. In kontinuierlich evolvierenden Softwareprojekten und vor allem bei iterativen Projektmanagement-Strategien wie SCRUM \cite{gloger_scrum_2016} oder dem Spiralmodell \cite{boehm_spiral_1988} repräsentiert die Refaktorisierung als Entwicklungsschritt einen großen Zeitaufwand, wobei die einzelnen Refaktorisierungsmaßnahmen repetitiv erscheinen mögen. Zur Mitigation dieses Problems haben sich einige Ansätze etabliert, zum Beispiel Autofactor \cite{rouvignac_httpautorefactororg_2020}, WalkMod \cite{pau_httpwalkmodcom_2020}, Facebooks pfff \cite{facebook_httpsgithubcomfacebookarchivepfff_2020}, Kadabra \cite{bispo_httpsgithubcomspecs-feupkadabra_2020} oder Leafactor \cite{cruz_leafactor_2017}. Diese Tools detektieren Refaktorisierungskandidaten und beheben diese soweit möglich. Zur Vereinfachung können die Tools dabei teilweise in Entwicklungsplattformen integriert oder über eigene Programmierschnittstellen angesprochen werden. Dennoch ist der Handlungsfreiraum dieser Tools durch die Komplexität der Detektionsmechanismen und der zu refaktorisierenden Software beschränkt. Eine automatisierte Refaktorisierung ist hierdurch mit weiteren Problemen behaftet, zum Beispiel durch die transitive Induzierung von weiteren Refaktorisierungskandidaten in den Programmcode durch die Behebung eines einzelnen Refaktorisierungskandidaten (für ein konkretes Beispiel siehe \Cref{sec:code-smell-quiz}). Durch die Beschränktheit der automatisierten Refaktorisierung kann diese infolgedessen die manuelle Refaktorisierung nicht vollständig ersetzen, aber dennoch als hilfreiches Werkzeug bei der Entwicklung dienen.

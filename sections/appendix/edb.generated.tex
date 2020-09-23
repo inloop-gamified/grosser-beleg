@@ -1,0 +1,79 @@
+\tocless\chapter{Erklärungsdatenbank}\label{ch:edb}
+
+\begin{longtable}[H]{ p{.25\textwidth} p{.65\textwidth} }
+\hline
+Identifikator & Erklärung (Englisch) \\
+\hline \hline
+Avoid\allowbreak Nested\allowbreak Blocks & Nested blocks are often leftovers from the debugging process, they confuse a reader. \\ \hline
+Empty\allowbreak Block & Empty blocks occur, when a code block is created but never used. They should be removed. \\ \hline
+Final\allowbreak Class & Classes with private constructors should be declared as final, because they are not initializable from an outside context. \\ \hline
+Hide\allowbreak Utility\allowbreak Class\allowbreak Constructor & Utility classes (classes that contain only static methods or fields in their API) should not have a public constructor, because they are only accessed by their type and not by an object. \\ \hline
+Throws\allowbreak Count & Throwing too many (different) exceptions makes the handling of these very complex. Apply polymorphism to the exception types (where possible) and reduce the amount of throw statements. \\ \hline
+Visibility\allowbreak Modifier & Class members should be private, unless they are static final, immutable or specifically annotated, to enforce encapsulation. \\ \hline
+Class\allowbreak Fan\allowbreak Out\allowbreak Complexity & Reduce the number of classes a given class relies on. Many classes from the standard library are excluded from this restriction, such as ArrayList or NullPointerException. A class with too many dependencies on other classes should be refactored. \\ \hline
+\caption{Erklärungen zu strukturellen Verstößen.}
+\label{tab:edb-john}
+\end{longtable}
+
+
+\begin{longtable}[H]{ p{.25\textwidth} p{.65\textwidth} }
+\hline
+Identifikator & Erklärung (Englisch) \\
+\hline \hline
+Need\allowbreak Braces & Certain control flow elements, for which it is optional to use curly braces, should always use curly braces. Nesting more than one statement in control flow elements without braces will only influence the first one. Not using curly braces is error prone. \\ \hline
+Left\allowbreak Curly & Code blocks should always include left curlies. \\ \hline
+Right\allowbreak Curly & Right curlies should be placed in the same line of a potentially following control flow elements, such as if-else or try-catch. Do not place statements in the same line after right curlies. \\ \hline
+Avoid\allowbreak Inline\allowbreak Conditionals & Inline conditionals should be avoided, since they are hard to read. \\ \hline
+Default\allowbreak Comes\allowbreak Last & Java allows the default statement to be placed at any position in the switch statement. Placing it at the end makes the switch statement more readable. \\ \hline
+Hidden\allowbreak Field & Local variables should not shadow a field that is defined in the same class. \\ \hline
+Illegal\allowbreak Instantiation & For certain classes, it is preferred to use a factory method instead of a constructor for performance reasons. For example, in the java.lang.Boolean class, constructor invocations should be replaced with the factory method Boolean.valueOf(). \\ \hline
+Illegal\allowbreak Token & Certain statements should not be used, because they make the code less readable, may lead to confusion or are deprecated in the given context. \\ \hline
+Inner\allowbreak Assignment & All assignments should occur in their own isolated statement to increase readability. Inner assignments such as Integer.toString(i = 2) should be avoided. \\ \hline
+Magic\allowbreak Number & Numeric literals (except -1, 0, 1 and 2) should be defined as constants, i.e. as a variable or field with the final modifier such as "static final int SECONDS\_PER\_DAY = 24 * 60 * 60". \\ \hline
+Missing\allowbreak Switch\allowbreak Default & Switch statements should contain a default to account for cases that get introduced by future revisions. Default cases can also throw exceptions if they are never expected to be executed. \\ \hline
+Multiple\allowbreak Variable\allowbreak Declarations & Each variable declaration should reside in its own statement and line. This increases readability. \\ \hline
+One\allowbreak Statement\allowbreak Per\allowbreak Line & Avoid multiple statements per line. It's very difficult to read multiple statements in one line. \\ \hline
+Overload\allowbreak Methods\allowbreak Declaration\allowbreak Order & Overloaded methods should be placed next to each other to increase readability. Overloaded methods are methods, which have the same name but different sets of parameters. \\ \hline
+Modifier\allowbreak Order & The order of modifiers should conform to the Java language specification. Declare modifiers in the following order: public, protected, private, abstract, default, static, final, transient, volatile, synchronized, native, strictfp. Annotations should be placed before any modifier. \\ \hline
+Redundant\allowbreak Modifier & In certain contexts, modifiers should be not explicitly specified, because they are already applied by the programming language. For example, interface definitions should not contain the public and abstract modifiers for method declarations. \\ \hline
+Abbreviation\allowbreak As\allowbreak Word\allowbreak In\allowbreak Name & If any abbreviation (consecutive capital letters) is used in a specification, it should not exceed a certain length, to make the specification more readable. \\ \hline
+Abstract\allowbreak Class\allowbreak Name & Abstract classes should conform to naming conventions, such as being named "Abstract...". Vice versa, classes named in this way should include the abstract modifier. \\ \hline
+Class\allowbreak Type\allowbreak Parameter\allowbreak Name & Class type parameters of generic classes should conform to naming conventions. For example, naming a type parameter "T" is ok, whereas naming it "abc" such as in MyClass\textless{}abc\textgreater{} \{\} violates the conventions. Type parameters should match the regular expression "\^{}[a-zA-Z]\$". \\ \hline
+Constant\allowbreak Name & Constants (static and final fields or interface/annotation fields) should conform to naming conventions. For example, naming a constant "foo" or "BAR" is ok, whereas naming it "fooBAR" such as in final static int fooBAR violates the conventions. Constants should match the regular expression "\^{}[A-Z][A-Z0-9]*(\_[A-Z0-9]+)*\$". \\ \hline
+Method\allowbreak Naming & Methods should be named in "lowerCamelCase" to conform to the Java naming conventions. This improves readability and avoids confusion. \\ \hline
+\caption{Erklärungen zu stilistischen Verstößen.}
+\label{tab:edb-marc}
+\end{longtable}
+
+
+\begin{longtable}[H]{ p{.25\textwidth} p{.65\textwidth} }
+\hline
+Identifikator & Erklärung (Englisch) \\
+\hline \hline
+Empty\allowbreak Catch\allowbreak Block & Exceptions should be handled in the corresponding catch block. Not handling an exception is error prone. \\ \hline
+One\allowbreak Top\allowbreak Level\allowbreak Class & Each top level class (such as public classes or the first class in a file), interface, enum or annotation should reside in its own source file. \\ \hline
+Covariant\allowbreak Equals & Every class that declares its own equals(...) method should override the equals(Object o) method. This is to make sure that the equals(Object o) method of the Object type is overridden correctly and does, for example, not contain the type of the class itself such as in equals(Foo o) of the class Foo. \\ \hline
+Empty\allowbreak Statement & The empty statement ; could be placed by accident and lead to problems such as in if(...); do ... \\ \hline
+Equals\allowbreak Avoid\allowbreak Null & If a string variable may be null, avoid calling .equals(...) on it to compare it to another, non null string. Instead, call the .equals(...) method on the non null string such as in "Foo".equals(otherString). \\ \hline
+Equals\allowbreak Hash\allowbreak Code & Classes that override either hashCode() or equals(...) should also override the other. Equal objects should always have the same hash code. Hash codes are used, for example, in hash based collections such as HashMap or HashSet. \\ \hline
+Explicit\allowbreak Initialization & Java initializes variables to default values (such as false for boolean or null for object types) before performing any initialization specified in the code. Therefore, if you explicitly initialize variables to their internal default value, Java will run this computation twice, resulting in a minor inefficiency. \\ \hline
+Fall\allowbreak Through & In Java switch statements, when cases do not specify a break, return, throw or continue statement, they fall through to the case specified below them. \\ \hline
+Illegal\allowbreak Catch & Certain exceptions should not be catched, such as a java.lang.Exception, because they are too general and/or may shadow problems in the control flow. \\ \hline
+Illegal\allowbreak Throws & Certain exceptions should not be thrown, such as a java.lang.Exception, because they are too general and/or do not represent the error cause specifically enough. \\ \hline
+Modified\allowbreak Control\allowbreak Variable & Control variables such as i in for(int i = 0;...) should not be modified manually inside the according control flow block. \\ \hline
+Nested\allowbreak For\allowbreak Depth & Extensive nesting of for blocks decreases readability and may exponentially increase computational efforts. \\ \hline
+Nested\allowbreak If\allowbreak Depth & Extensive nesting of if blocks decreases readability and may lead to confusion about which branches will be executed in certain situations. \\ \hline
+Nested\allowbreak Try\allowbreak Depth & Extensive nesting of try blocks decreases readability and may lead to confusion about which exceptions will be handled in certain situations. \\ \hline
+Parameter\allowbreak Assignment & Assignments to parameters of a function is often considered poor programming practice, because the parameters may be mutated without knowledge of the outside caller and reused in a potentially erroneous context. Parameters can be declared final. \\ \hline
+Simplify\allowbreak Boolean\allowbreak Expression & Over complicated boolean expressions are hard to understand and should be simplified. \\ \hline
+Simplify\allowbreak Boolean\allowbreak Return & Over complicated boolean return statements are hard to understand and should be simplified. \\ \hline
+String\allowbreak Literal\allowbreak Equality & Always use .equals(...) instead of == or != when comparing strings, since the latter will only compare the object references instead of the actual values of the strings. \\ \hline
+Variable\allowbreak Declaration\allowbreak Usage\allowbreak Distance & Variables should be declared as near to their first usage, as possible. \\ \hline
+Boolean\allowbreak Expression\allowbreak Complexity & Boolean expressions with too many operators are hard to read, maintain and debug. Too complex expressions may be split into separate expressions. \\ \hline
+Cyclomatic\allowbreak Complexity & The control flow of a component should not have too many possible decision paths. Reduce the number of decision points (such as if, for, switch, ... statements). \\ \hline
+Java\allowbreak N\allowbreak C\allowbreak S\allowbreak S & The control flow of a component should not have too many executable statements. Reduce the number of executable statements. \\ \hline
+N\allowbreak Path\allowbreak Complexity & The control flow of a component should not have too many possible decision paths. Reduce the number of decision points (such as if, for, switch, ... statements and complex boolean clauses). \\ \hline
+\caption{Erklärungen zu weiteren, generellen Verstößen.}
+\label{tab:edb-anne}
+\end{longtable}
+

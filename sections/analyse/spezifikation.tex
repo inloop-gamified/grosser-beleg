@@ -1,0 +1,45 @@
+\section{Spezifikation}\label{sec:spezifikation}
+
+Um die Anforderungen an die Gamification-Erweiterung zu konkretisieren, werden anhand den gezeigten Anwendungsfällen nachfolgend genaue funktionale Anforderungen aufgelistet und konkrete Qualitätsanforderungen beschrieben.
+
+\subsection{Funktionale Anforderungen}\label{sec:funktionale-anforderungen}
+
+In der nachfolgenden Sektion sollen konkrete funktionale Anforderungen organisiert werden, also notwendige Funktionalitäten, welche durch die Gamification-Erweiterung unterstützt werden sollen. Insbesondere die abstrakten Anwendungsfälle und Akteure aus \Cref{sec:use-cases-actors} sollen hierzu als kontextbezogene Grundlage dienen.
+
+\begin{enumerate}
+\item Studierende sollen die Möglichkeit haben, die Codequalität der eigenen Lösungen automatisiert auf Grundlage eines Regelwerks für Codierungsrichtlinien analysieren zu lassen.
+\item Durch die Analyse von Lösungen soll es für Studierende möglich sein, detektierte Code Smells in den eigenen Lösungen zu erkennen.
+\item Die Detektionen sollen für Studierende optisch ansprechend und möglichst leicht verständlich aufbereitet werden.
+\item Für die Initialisierung des automatisierten Analyseprozesses und die Auflistung der Detektionen muss die Erweiterung eigene interaktive Komponenten in der grafischen Oberfläche der Gesamtanwendung integrieren und bereitstellen.
+\item Die integrierten und bereitgestellten visuellen Komponenten müssen ein direktes und interaktives Feedback ermöglichen.
+\item Ein Studierender soll die Möglichkeit haben, die eigene Codequalität mit anderen Studierenden zu vergleichen, sodass die Kompetitivität der Refaktorisierung gefördert wird.
+\item Um den Spaß und das Interesse an der Refaktorisierung zu vermitteln, soll der Prozess der Refaktorisierung im Rahmen eines eigenen Game-Designs erlebbar gemacht werden.
+\item Dem Studierenden soll es freistehen, ob er die Gamification-Erweiterung nutzen möchte oder nicht.
+\item Die Gamification-Erweiterung soll eine hinreichende architekturelle und visuelle Trennung von der Hauptanwendung realisieren, so dass der Aspekt des eigentlichen E-Assessments nicht in den Hintergrund rückt.
+\item Die Detektionen der Code Smells sollen mit durch den Studierenden interpretierbaren Lösungsvorschlägen für die Behebung des Code Smells ausgestattet sein und diese auch visuell repräsentieren.
+\item Hierzu soll die Erweiterung Beschreibungen zu den im Regelwerk festgesetzten Codierungsrichtlinien bereitstellen.
+\item Die der automatisierten Codequalitätsanalyse zugrundeliegenden Regeln sollen, wenn dies auf die jeweilige Regel applizierbar ist, durch einen Administrator oder Lehrpersonal über die Bereitstellung von Konfigurationsdateien konfigurierbar, aktivierbar und deaktivierbar sein.
+\item Dem Lehrpersonal soll es ermöglicht werden, eine Übersicht in Form einer Statistik oder in Form einer ähnlichen visuellen Darstellung zu erhalten, welche es ermöglicht, häufig auftretende Code Smells einzusehen.
+\item Über eine ähnliche Ansicht soll das Lehrpersonal anhand einer Statistik oder einer ähnlichen visuellen Darstellung einsehen können, wie groß das Interesse der Studierenden an der Refaktorisierung ist.
+\item Der Administrator soll die Gamification-Erweiterung möglichst ohne zusätzlichen Aufwand zusammen mit der bestehenden Basisanwendung aufsetzen können.
+\end{enumerate}
+
+\subsection{Qualitätsanforderungen}
+
+Analog zu den in \Cref{fig:softwarequalitaet} gezeigten Modellparametern sollen auch für die zu entwickelnde Gamification-Erweiterung bestimmte Qualitätsanforderungen spezifiziert werden. Hierzu werden die übergeordneten Qualitätsattribute zunächst priorisiert.
+
+\begin{table}[H]
+\caption{Qualitätsanforderungen an die Gamification-Erweiterung analog zu den in \cite{technical_committee_isoiec_jtc_1sc_7_software_and_systems_engineering_isoiec_2001} gezeigten Modellparametern von interner und externer Softwarequalität. Abkürzungen von links nach rechts: (+) normale Priorität, (++) hohe Priorität, (+++) sehr hohe Priorität, (++++) höchste Priorität.}\label{tab:qualitaetsanforderungen}
+\begin{tabular}{|l|c|c|c|c|} \hline
+\multicolumn{1}{|l|}{Qualitätsattribut} & \multicolumn{4}{c|}{Priorisierung} \\ \cline{2-5}
+                                        & +    & ++   & +++  & ++++ \\ \hline
+Funktionalität                          &      &      & x    &      \\ \hline
+Verlässlichkeit                         & x    &      &      &      \\ \hline
+Nutzbarkeit                             &      &      &      & x    \\ \hline
+Effizienz                               &      & x    &      &      \\ \hline
+Wartbarkeit                             &      & x    &      &      \\ \hline
+Portierbarkeit                          &      & x    &      &      \\ \hline
+\end{tabular}
+\end{table}
+
+Wie in \Cref{tab:qualitaetsanforderungen} gezeigt, ist die Nutzbarkeit von höchster Priorität. Diese Festlegung beruht auf der Annahme, dass die Erfahrungen des Nutzers, wie in \Cref{sec:gamification-frameworks} und in \Cref{sec:gamification-motivator} beschrieben, eine außerordentlich große Rolle spielen. Außerdem wurde für die Funktionalität eine sehr hohe Priorität angesetzt, worunter nicht nur die Qualität der Erfüllung der funktionalen Anforderungen zählt, sondern auch die Interoperabilität, welche eine größere Rolle bei der Integration in das Basissystem spielt sowie die Sicherheit der Erweiterung, welche insbesondere durch die Speicherung von personenbezogenen Daten und kopierrechtlich geschützten Source-Codes motiviert wird. Bei der Nutzbarkeit spielt auch die Effizienz eine Rolle, weil aus dem Zeitverhalten und der Skalierbarkeit der Gamification-Erweiterung direkte Auswirkungen auf die Interaktivität resultieren können. Ein denkbares Szenario, welches diesen qualitativen Effekt induziert, wäre, dass ein Studierender sehr lange auf die Auswertung der statischen Analyse des eigenen Codes warten muss. Dies würde sich unmittelbar auf die Nutzbarkeit auswirken. Da die Anwendung nicht für die Installation auf einem eingebetteten System mit stark beschränkten Hardwareressourcen gedacht ist, sondern auf einem Webserver mit verhältnismäßig großem Speicherplatz und ausreichender Rechenleistung laufen soll, wurde die Ressourcennutzung der Anwendung mit geringerer Priorität eingeschätzt. Daher wurde insgesamt die Priorität dieses Attributs Effizienz als hoch und nicht als sehr hoch eingestuft. Als weiteres Qualitätsattribut mit hoher Priorität wurde die Wartbarkeit selektiert, insbesondere durch die Relevanz der dahinter liegenden Teilattribute, wie die Änderbarkeit (betont durch Anwendungsfall AL1 in \Cref{fig:use-cases}) sowie die Analysierbarkeit (repräsentiert durch die Anwendungsfälle L1 und L2 in \Cref{fig:use-cases}). Ebenso wurde die Priorität der Portierbarkeit als hoch eingestuft, motiviert durch die Installierbarkeit (gezeigt durch Anwendungsfall A1 in \Cref{fig:use-cases}) und die kontextsensitive Adaptivität, wobei, wie in \Cref{sec:zielgruppe} bereits erwähnt, vor allem der persönliche Kontext und die Fähigkeiten des Nutzers relevant für die Adaptionsmechanismen der Anwendung sind. Weiterhin kontribuiert zur Portierbarkeit auch die Koexistenz der Erweiterung neben anderen Anwendungen, insbesondere INLOOP selbst, wobei dies unmittelbar mit der Interoperabilität zusammenhängt. Ein indikatives Qualitätsszenario hierfür bestünde in der gemeinsamen Nutzung einer Datenbank, sodass die Annahmen und Prozesse der Basisanwendung nicht gestört werden. Die Erweiterung soll entsprechend durch ihre Softwarearchitektur soweit möglich abgekapselt werden. Abschließend, da die Reife der Gamification-Erweiterung im Rahmen der prototypischen Implementation eine untergeordnete Rolle spielt und das durch einen Ausfall des Systems abschätzbare Risiko wegen der dynamischen Ausschaltbarkeit (illustriert durch Anwendungsfall S6 in \Cref{fig:use-cases}) der Funktionalitäten gering ist, wird der Verlässlichkeit eine normale Priorität zugewiesen.

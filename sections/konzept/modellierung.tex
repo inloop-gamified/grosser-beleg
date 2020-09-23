@@ -1,0 +1,116 @@
+
+\section{Architekturentwurf der Gamification-Erweiterung}
+
+Auf Grundlage der Architektur zur Integration der statischen Codeanalyse sowie der Ergänzung von Code Smells um semantische Beschreibungen und dem vorgestellten Game-Design soll nun die Gamification-Erweiterung architekturell entworfen werden.
+
+\subsection{Integrationspunkte und Komponenten}
+
+Da die Gamification-Erweiterung in das bestehende INLOOP-System integriert werden soll, muss zunächst eine Konzeption der konkreten Integrationspunkte durchgeführt werden, um besser zu verstehen, an welchen Stellen die Erweiterung ansetzt und die Erweiterung bestmöglich von der Basisanwendung hinsichtlich der Modularität und der Wartbarkeit abzukapseln.
+
+\subsubsection{Komponentenansicht}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 684 390]{components.pdf}
+\caption{Übersicht über mögliche Komponenten der Gamification-Erweiterung und deren Integrationspunkte in der bestehenden INLOOP-Architektur.}\label{fig:components}
+\end{figure}
+
+\noindent Anhand von \Cref{fig:components} werden die existierenden Komponenten in INLOOP sichtbar, an welche die Teilkomponenten der Gamification-Erweiterung, welche unter dem Metamodul \textbf{inloop.medics} zusammengefasst sind, anknüpfen:
+
+\begin{itemize}
+\item \textbf{inloop.solutions} ist für die Prozesse der Lösungseinreichung und -darstellung verantwortlich und stellt Lösungsdateien bereit.
+\item \textbf{inloop.testrunner} beinhaltet die TestRunner Architektur und erhält von inloop.solutions Lösungsdateien, welche durch dieses Modul getestet werden.
+\item \textbf{inloop.gitload} stellt die Continuous-Publishing-Funktionalitäten bereit und die darüber bezogenen Docker Images, von denen die vorkonfigurierten Docker Container zur Durchführung der Tests im TestRunner instanziiert werden.
+\item \textbf{inloop.tasks} ist als Modul verantwortlich für die in INLOOP angebotenen Aufgabenstellungen.
+\item \textbf{inloop.statistics} ermöglicht die Integration von Statistiken für den Administrator.
+\item \textbf{inloop.accounts} stellt die grundlegenden Registrierungs- und Login-Funktionalitäten bereit und erweitert diese um weitere Funktionalitäten, wie beispielsweise das Speichern einer Matrikelnummer.
+\item \textbf{inloop.grading} wird genutzt für die Vergabe von Bonuspunkten, welche für diese Erweiterung nicht vorgesehen ist. Daher ist dieses Modul in \Cref{fig:components} nicht aufgeführt.
+\end{itemize}
+
+\noindent Im Folgenden sollen die neuen Komponenten anhand deren Aufgaben beschrieben werden.
+
+\paragraph{inloop.medics.violations:} Diese Komponente beinhaltet die vorgestellte Parser-Architektur aus \Cref{fig:integration2} und realisiert hierüber das Einlesen des Test-Outputs der Komponente inloop.testrunner und die Abbildung der Detektionen auf Violations. Die Komponente stellt diese Violations zur Verfügung, indem die dazugehörigen Lösungsdateien (durch inloop.solutions bereitgestellt) im Rahmen einer Konsultation bereitgestellt werden. Des Weiteren ist diese Komponente verantwortlich für die Bewertung der Lösungen. Dazu bezieht sie von der inloop.tasks Komponente die jeweils erreichbaren Punkte für eine Aufgabe, wobei dies im Rahmen der Integration hinzuzufügen ist. Die erreichbaren Punkte können zum Beispiel vom Schwierigkeitsgrad der Aufgabe abhängen. Die Aufgabenbewertung wird als Schnittstelle der Komponente nach außen verfügbar gemacht. Außerdem stellt die Komponente erkannte Violations für die Analyse der häufig auftretenden Code Smells in der inloop.statistics Komponente zur Verfügung, analog zur Anwendungsfall- und Anforderungsspezifikation aus \Cref{sec:use-cases-actors} und \Cref{sec:spezifikation}.
+
+\paragraph{inloop.medics.rewards:} Mithilfe dieser Komponente erhalten Nutzer die Möglichkeit, Errungenschaften zu erhalten, zum Beispiel in Form von Badges. Die Isolation dieser Komponente ist besonders schwierig, weil die Ereignisse, welche zur Freischaltung einer Errungenschaft führen können, in verschiedenen anderen Komponenten erzeugt werden können. In \Cref{fig:components} ist die Einreichung einer Lösung in inloop.solutions und das Erreichen einer Punktzahl in inloop.medics.violations als Beispiel hierfür aufgeführt. Die Komponente muss entsprechende Schnittstellen bereitstellen, so beispielsweise die Prüfung der Freischaltung einer Badge möglichst selbstständig durchführen können. Hierfür kann das Observer\cite[S. 448ff]{ullenboom_java_2020} Entwurfsmuster oder eine Abwandlung genutzt werden. Django stellt als Implementation dessen das event-basierte Signals\footnote{Django Signals. \url{https://docs.djangoproject.com/en/3.1/topics/signals/} (Abgerufen am 16.9.2020)} Framework zur Verfügung. Wird eine Badge durch diesen Prozess freigeschaltet, so stellt die Komponente eine entsprechende Notifikation zur Verfügung sowie die hierbei gutgeschriebene Punktzahl.
+
+\paragraph{inloop.medics.ranking:} Die Punktzahlen von Lösungen und von Badges werden Nutzern über diese Komponente gutgeschrieben und in einem Leaderboard präsentiert, wobei die Komponente den individuellen Rang präsentiert. Dabei werden die Punkte für jeden Nutzer aggregiert und daraus eine Rangfolge erstellt. Da diese Aufgabe rechenintensiv ist, sollte sie gesondert ausgeführt werden (siehe \Cref{sec:auslagerung}). Die Aggregation kann hierbei in diskreten Zeitintervallen geschehen. Um zusätzlich die Rangänderungen zu aggregieren, bietet sich beispielsweise ein Zeitintervall von 24 Stunden an, sodass sich Ränge und Rangänderungen täglich aktualisieren.
+
+\paragraph{inloop.medics.social:} Diese Komponente ermöglicht die Bereitstellung der sozialen Funktionalitäten und der Assoziation des Rangs aus der inloop.medics.ranking Komponente mit einem konkreten Spieler. Hierzu wird der jeweils zu einem Spieler gehörende Nutzer von der inloop.accounts Komponente bezogen und mit weiteren Merkmalen ausgestattet. Beispielsweise erhält ein Spieler die Möglichkeit, einen konkreten Avatar auszuwählen. Außerdem stellt diese Komponente die Funktionalität bereit, dass Spieler andere Spieler verfolgen können, indem jeder Spieler im Verantwortungsbereich dieser Komponente andere Spieler zu seinen Kollegen ernennen kann.
+\\
+
+\noindent Gemeinsam bilden die oben genannten Komponenten die Architektur der Gamification-Erweiterung. Durch die Komponentenansicht konnten allerdings noch nicht alle Integrationspunkte hinreichend erläutert werden. Hierzu werden in den folgenden Sektionen nochmals konkrete Teile der Architektur aufgegriffen, die eine besondere Rolle im Integrationskonzept spielen.
+
+\subsubsection{Anpassung der Build-Konfiguration}
+
+Um die Integration der Codeanalysetools in den containerisierten Buildprozess zu ermöglichen, ist es notwendig, das über Continuous Publishing bezogene Docker Image mit den entsprechenden Build-Schritten für die auszuführenden Codeanalysetools zu ergänzen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 627 210]{build-config.pdf}
+\caption{Notwendige Anpassungen (grau hinterlegt) im Ant Build-Prozess des über Continuous Publishing bezogenen Docker Image des TestRunners.}\label{fig:build-config}
+\end{figure}
+
+\noindent Diese Schritte sind in \Cref{fig:build-config} als grau hinterlegt markiert. Hinzu kommen die hier nicht explizit gezeigten Konfigurationen aus dem QualityReview Framework. Die Änderungen müssen im durch Continuous Publishing bezogenen Aufgaben-Repository realisiert werden. Hierfür ist es notwendig, die Archive der Codeanalysetools im Docker Image (grau hinterlegt) zu integrieren, damit diese im vom TestRunner instanziierten Docker Container ausgeführt werden können.
+
+\subsubsection{Auslagerung rechenintensiver und periodisch wiederkehrender Aufgaben}\label{sec:auslagerung}
+
+INLOOP nutzt Service Workers, also von der eigentlichen Webanwendung separierte Prozesse, um rechenintensive und periodisch wiederkehrende Aufgaben wie das Durchführen eines Tests durch den TestRunner vom klassischen Request-Response Zyklus oder das Löschen von ungültigen Nutzern auszugliedern. Die Gamification-Erweiterung inkludiert selbst rechenintensive und periodisch wiederkehrende Prozesse, welche aus dem Request-Response Zyklus ausgegliedert werden müssen. Für die Berechnung der Leaderboards beispielsweise sind komplexe Aggregationen für jeden Nutzer notwendig, um den insgesamten Punktestand zu ermitteln. Außerdem ist dieser Prozess unabhängig von einer konkreten Anfrage an die Webanwendung. Für die Integration bietet sich daher an, diesen Prozess an einen Service Worker Prozess auszulagern. Idealerweise werden diese Berechnungen auch nur zu einem Zeitpunkt ausgeführt, wenn die Webanwendung nur eine geringe Last besitzt, zum Beispiel um Mitternacht.
+
+\subsubsection{Bereitstellung von Notifikationen}\label{sec:notifikationen}
+
+Zur Ermöglichung eines direkten Feedbacks, sollen Nutzer Notifikationen zu bestimmten ausgeführten Aktionen erhalten, beispielsweise die Änderung ihres Punktestandes. Das im Django Framework, auf welchem die webanwendungsspezifischen Funktionalitäten INLOOPs basieren, bereitgestellte und bereits in INLOOP genutzte Messages-Framework ist hierzu nicht applizierbar, weil dies nur im nicht unterbrochenen Request-Response-Zyklus eingebunden werden kann. Bei an Service Worker ausgelagerten Prozessen oder bei von Django Signals initiierten Prozessen, welche jeweils eine Notifikation zur Folge hätten, könnte dies nicht genutzt werden. Daher ist die Einführung einer weiteren Komponente notwendig, welche zuvor persistierte Notifikationen in die Webanwendung integriert. Für diese Komponente sollen nun zwei konkrete Konzepte vorgestellt werden.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth, bb=0 0 476 181]{notification-middleware.pdf}
+\caption{Architektur für die Bereitstellung von Notifikationen im Pull-Prinzip über eine Django-Middleware oder einen Django-Kontextprozessor im Request-Response-Prozess.}\label{fig:notification-middleware}
+\end{figure}
+
+\noindent Das erste Konzept ist in \Cref{fig:notification-middleware} gezeigt und beinhaltet die Einführung einer Komponente, die ähnlich wie ein Proxy agiert. Browser-Anfragen eingeloggter Nutzer an den Server werden über diesen Proxy geleitet, wobei die INLOOP-Datenbank nach ungelesenen Notifikationen für einen Nutzer abgefragt wird. Diese Notifikationen können hier zuvor von anderen Prozessen erzeugt worden sein und sind nicht an den Request-Response-Prozess gebunden. Geladene, ungelesene Notifikationen werden als gelesen markiert und in Metadaten der Anfrage des Nutzers geschrieben. Diese Metadaten werden von der angeforderten Ansicht eingelesen und können nun verwendet werden, um die Notifikationen in das zurückzugebende HTML zu rendern. Der Nutzer erhält die Notifikation in der angeforderten Seite. Zu exkludieren sind hierbei Anfragen, die kein HTML, sondern beispielsweise Ressourcen anfordern, beispielsweise AJAX Anfragen. Dieses Prinzip ist sehr einfach integrierbar über die Nutzung einer Django Middleware\footnote{Django Middleware. \url{https://docs.djangoproject.com/en/3.1/topics/http/middleware/} (Abgerufen am 16.9.2020)}, welche es ermöglicht, im Request-Response Zyklus zusätzliche Operationen zu ergänzen, oder über das Verwenden eines Django Kontextprozessors\footnote{Django Template API. \url{https://docs.djangoproject.com/en/3.1/ref/templates/api/} (Abgerufen am 16.9.2020)} für die Ergänzung von zusätzlichen Umgebungsinformationen, in diesem Fall die Notifikationen. Leider erhält der Nutzer auf diese Weise Notifikationen immer erst beim Laden einer Seite, nicht schon asynchron, während die Seite geöffnet ist. Daher soll noch ein zweites Konzept vorgestellt werden.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth, bb=0 0 390 189]{notification-middleware-push.pdf}
+\caption{Architektur für die Bereitstellung von Notifikationen im Push-Prinzip über einen asynchronen Nachrichtenaustausch.}\label{fig:notification-middleware-push}
+\end{figure}
+
+\noindent Bei dem in \Cref{fig:notification-middleware-push} vorgestellten zweiten Konzept zur Bereitstellung von Notifikationen wird zur Bereitstellung von Notifikationen ein Seitenkanal benutzt, der von dem Django-Channels-Framework bereitgestellt werden kann. Hierbei registriert sich der Nutzer bei dem Besuch der Seite über eine WebSocket Verbindung in einem von Django bereitgestellten individuellen \enquote{Consumer}. Sobald ein nebenläufiger Prozess eine Notifikation erzeugt, wird diese über den Nachrichten-Bus an den Consumer übermittelt, und schließlich über die aktive WebSocket-Verbindung an den Nutzer. Eine Persistierung ist nicht zwingend notwendig, jedoch sinnvoll, um Notifikationen nicht zu verlieren. Dieser Ansatz ermöglicht eine Benachrichtigung des Nutzers in Echtzeit, jedoch ist der Ansatz technisch limitiert und erfordert den Einsatz eines ASGI\footnote{ASGI. \url{https://asgi.readthedocs.io/en/latest/} (Abgerufen am 13.8.2020)}-unterstützenden Server-Backends, wie zum Beispiel Daphne\footnote{Daphne. \url{https://github.com/django/daphne} (Abgerufen am 13.8.2002)}, und damit eine Umstrukturierung des Deployments.
+
+\subsection{Modelle und Persistenzschicht}\label{sec:models}
+
+Zusätzlich zur Strukturierung der Gamification-Erweiterung in Teilkomponenten soll nun auch eine konkrete jeweilige Modellstruktur entworfen werden, als Grundlage für die Implementation im nächsten Kapitel.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 735 247]{ekd-violations.pdf}
+\caption{Eine mögliche Modellstruktur der inloop.medics.violations Komponente.}\label{fig:ekd-violations}
+\end{figure}
+
+\noindent \Cref{fig:ekd-violations} zeigt eine Modellstruktur, auf deren Grundlage die Funktionalitäten der inloop\allowbreak .medics\allowbreak .violations Komponente umgesetzt werden können. Hierbei werden, wie in den vorigen Sektionen erläutert, Violations durch das Parsing der Reports von Codeanalysetools aus dem TestRunner erstellt und zu einem jeweiligen SolutionFile aus der inloop.solutions Komponente zugewiesen, um dieses später in der Nutzeroberfläche zusammen anzeigen zu können. Außerdem erhält eine Violation eine Priorität in Form einer zu validierenden Zeichenkette, wobei auf Grundlage dieser später der Punktabzug für Lösungen über die Bereitstellung einer Penalty errechnet werden muss sowie eine Rule, welche die Abbildung der Erklärungsdatenbank symbolisiert und die jeweiligen Erklärungen beinhaltet. Eine Rule wird analog zum Narrativ einem Medic zugeordnet, welcher einen Namen und eine spezielle Profession (zum Beispiel Chirurg) hat. Zu beachten ist, dass die Rule-Objekte und die Medic-Objekte nicht dynamisch vom Nutzer erzeugt werden, sondern zum Start der Anwendung über bestimmte Migrationsmechanismen bereitgestellt werden müssen. Außerdem ist anzumerken, dass, wie bei allen in dieser Sektion gezeigten bidirektionalen Assoziationen die Gegenseite durch objektrelationales Datenbankmapping automatisch inferiert wird und somit in der Integration implizit gegeben ist, aber in der Modellstruktur dennoch explizit notiert ist. Der Gesundheitszustand einer Lösung bestimmt sich durch die Anzahl an Violations und der durch die Aufgabe der Lösung erreichbare Punktzahl, von der diese abgezogen werden. Erreicht eine Lösung die volle mögliche Punktzahl, so ist sie gesund. Erhält sie Punkte, jedoch nicht alle möglichen Punkte, so ist die Lösung krank. Eine Lösung wird als gestorben gekennzeichnet, wenn sie keine Punkte erreicht hat. Auf Grundlage dessen können außerdem die im Game-Design erwähnten Konsultationen (\Cref{sec:konsultationen}) oder Fragen zu Lösungen anderer (\Cref{sec:quizzes}) umgesetzt werden, wozu eine Konsultation oder ein Quiz zu mehreren Violations erstellt und mit den zur jeweiligen Violation sichtbaren Informationen ausgestattet werden kann.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 576 259]{ekd-social.pdf}
+\caption{Eine mögliche Modellstruktur der inloop.medics.social Komponente.}\label{fig:ekd-social}
+\end{figure}
+
+\noindent Die in \Cref{fig:ekd-social} gezeigte inloop.medics.social Komponente erweitert durch das PlayerDetails Modell den bereits gegebenen User, wobei dieser durch die erreichten Punkte, dem direkt damit zusammenhängenden Level und einem auswählbaren (jedoch optionalen) Avatar ergänzt wird. Außerdem ermöglicht die Komponente das Erstellen von so genannten ColleagueTrackers, welche die Kollegen-Beziehung eines Nutzers zu einem anderen abbildet. Hierbei gibt es immer einen \enquote{tracker}, also der Nutzer, welcher die Kollegenbeziehung mit dem hierbei passiven \enquote{tracked\_colleague} auswählt. Wählt ein Nutzer einen anderen Nutzer als Kollegen aus, so bedeutet dies nicht, dass diese Beziehung auch umgekehrt gelten muss. Somit wird verhindert, dass Nutzer gegen ihren Willen auf dem eigenen Profil als Kollege eines anderen, möglicherweise ihnen unbekannten Nutzer, hinzugefügt werden. Für eine implizite Umkehrbarkeit wäre die Konzeption und Integration von Freundschaftsanfragen sinnvoll.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 526 318]{ekd-rewards.pdf}
+\caption{Eine mögliche Modellstruktur der inloop.medics.rewards Komponente.}\label{fig:ekd-rewards}
+\end{figure}
+
+\noindent Eine zentrale Rolle in der inloop.medics.rewards Komponente spielen die Badges, welche durch einen Spieler freigeschaltet werden können. Badges werden hierbei durch einen Identifikator gekennzeichnet, durch welchen diese später in der Anwendungslogik referenziert werden können. Über eine Schnittstelle, die für einen Nutzer eine Badge mit einem bestimmten Identifikator durch eine spezielle Interaktion freischaltet, ist eine hinreichende Entkopplung vom Kontext der anderen Komponente möglich. Hierbei ist zu unterscheiden zwischen Badges, welche unabhängig vom Nutzer über den initialen Migrationsprozess geladen werden können (repräsentiert durch das Badge Modell) sowie der Markierung, dass ein bestimmter Nutzer eine Badge freigeschaltet hat (BadgeScore). Bei der Freischaltung einer Badge wird über eine der in \Cref{sec:notifikationen} diskutierten Architekturen eine Notifikation erstellt und an den Nutzer ausgegeben.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth, bb=0 0 691 433]{ekd-ranking.pdf}
+\caption{Eine mögliche Modellstruktur der inloop.medics.ranking Komponente.}\label{fig:ekd-ranking}
+\end{figure}
+
+\noindent Das BadgeScore-Modell stammt hierbei aus der inloop.medics.ranking Komponente, wie in \Cref{fig:ekd-ranking} gezeigt. Diese beinhaltet verschiedene Modelle, die als Datenpunkte für die Persistierung der erreichten Punkte eines Nutzers dienen. Das Metamodell, Score, referenziert hierfür die dazugehörigen PlayerDetails und speichert einen ganzzahligen Punktwert. Da sowohl die Abgabe von Lösungen, als auch das Freischalten von Badges dem Nutzer Punkte gutschreibt, kann ein Score sowohl ein SolutionScore (referenziert Lösung), als auch ein BadgeScore (referenziert Badge) sein. Diese Score-Objekte werden durch die Interaktionen des Nutzers erzeugt und mit den entsprechenden Punkewerten versehen. Da beispielsweise eine Lösung auch aktualisiert werden kann und die Punktwerte nur für die aktuellste, bestandene Lösung gutgeschrieben werden sollen, wurde dem Metamodell Score noch ein boolsches Feld hinzugefügt, um die Validität zu setzen. SolutionScore Objekte überholter Lösungen können auf invalid gesetzt werden und werden infolgedessen nicht mehr für die Punkteberechnung herangezogen. Des Weiteren können Payments eingeführt werden, für die Umsetzung der Kauf-Mechanik in Konsultationen, um eine Detektion aufzudecken. Diese Payments würden dann von der Punktzahl eines Nutzers abgezogen werden, realisierbar durch einen negativen Punktwert. Die in Fragerunden zu Lösungen anderer Nutzer (\Cref{sec:quizzes}) richtig beantworteten Fragen erzielen Punkte als QuizScore. Die Punkte eines Nutzers können somit errechnet werden, indem die Summe aller Punkte der validen Score Objekte eines Nutzers gebildet wird. Anhand dessen wird auch das Level des Nutzers bestimmt. Für die Realisation der dynamischen Leaderboards wird außerdem ein RankSnapshot Modell eingeführt, welches für einen Nutzer in diskreten Zeitintervallen den Rang berechnet und den Unterschied zur letzten Position abspeichert.
+\\
+
+\paragraph{Skalierbarkeit:}\label{p:skalierbarkeit} Die Erstellung der RankSnapshots erfordert in festen Zeitabständen wiederholte und rechnenintensive Aggregationsoperationen über der Datenbank. Dies ist bei der Implementation zu beachten und gesondert an Service-Worker-Prozesse auszulagern. Außerdem ist eine konsistente Zwischenspeicherung der Punkte eines Nutzers sinnvoll, wenn Leaderboards nach diesem Kriterium sortiert werden sollen.
